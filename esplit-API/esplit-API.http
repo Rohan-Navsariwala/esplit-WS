@@ -1,0 +1,6 @@
+@esplit_API_HostAddress = http://localhost:5103
+
+GET {{esplit_API_HostAddress}}/endpoint/
+Accept: application/json
+
+###
