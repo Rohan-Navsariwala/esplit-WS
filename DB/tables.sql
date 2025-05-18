@@ -33,6 +33,7 @@ create table [dbo].[Splits] (
 	UpdatedAt DateTime,
 	Deadline DateTime,
 	isClosed bit default 0,
+	SplitAmount decimal(10,2) not null,
 	CONSTRAINT PK_Splits PRIMARY KEY (SplitID),
 	CONSTRAINT FK_Splits_Users FOREIGN KEY (CreatedBy) REFERENCES dbo.Users(UserID)
 );
