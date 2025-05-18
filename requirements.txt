@@ -1,0 +1,53 @@
+#expense splitter#
+ 
+#page 0
+Sign Up and Sign in page
+ 
+#page 1
+dashboard
+div 1 - split an expense (select people from contacts to split with) (split based on percentage, fix, equally, custom amount)
+div 2 - ongoing splits (check status, send reminder)
+div 3 - pending bills (reject, approve(pay, remind later))
+div 4 - contact request (allow user x to add you as contact)
+ 
+#page 2
+history/notifications
+(all logs, (rejected, approved, paid, expired, etc)
+--it has this one component only. non interactable. it is just there to show that's it
+ 
+#page 3
+contacts
+--basically enlisted all contacts. 2 buttons above. delete activates a checkbox and confirm delete. add new gives a popup to add.
+options (add new contact, remove a contact) based on username
+#nav component
+--root level, visible at all pages except login and signup. 
+--nav shows (project name,dashboard, history, contacts, active username, signout)
+
+
+##how will i store the stuff into db
+- user table (userid, username, Full Name, password hash, createdAt, isActive)
+- contacts table (userid1, userid2, connectionStatus, requestCreatedOn, ApprovedOn)
+- notification table (notifyFor(userID), actionPerformedBy(Username), NotificationText, isDeleted, Notificationtype)
+- splitData (splitid, createdbyID, splitTitle, split total amount, createdOn, deadline)
+- splitContacts (splitid, splitParticipant, oweAmount, splitStatus, statusChangeOn, paidOn)
+
+##api endpoints ( what i will be actually requesting which actually incorporated the above)
+getters()
+- getuserbyusername(for auth)
+- getnotificationsbyuserid
+- getcontactsbyuserid
+- getuserownedactivesplits
+- getsplitcontacts
+- getsplitrequests
+- getduesplits
+
+setters()
+- createsplit
+
+updaters()
+- updatesplitdata (generic, can be used for edit split and status update also)
+- 
+
+deleters()
+- deletecontact
+- deletenotificationbyid
