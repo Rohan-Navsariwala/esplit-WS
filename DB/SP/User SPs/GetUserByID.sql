@@ -1,0 +1,6 @@
+CREATE PROCEDURE GetUserByID
+	@UserID varchar(30)
+AS
+BEGIN
+	SELECT * FROM dbo.Users WHERE UserID = @UserID;
+END
