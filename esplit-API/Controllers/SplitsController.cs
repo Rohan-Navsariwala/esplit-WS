@@ -37,6 +37,7 @@ namespace esplit_API.Controllers
 
 		public IActionResult EditSplit()
 		{
+			//can edit split whole or just the interacted status
 			return null;
 		}
 		public IActionResult DeleteSplit()
@@ -44,10 +45,6 @@ namespace esplit_API.Controllers
 			return null;
 		}
 
-		public IActionResult InteractSplit()
-		{
-			return null;
-		}
 
 		public IActionResult PayDues()
 		{

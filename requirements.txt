@@ -51,3 +51,33 @@ updaters()
 deleters()
 - deletecontact
 - deletenotificationbyid
+- DELETE SPLIT
+
+Stored Procedures 
+#User
+- create user
+- delete user
+- get user by id
+- get user by user name
+
+#Contact
+- create connectionStatus
+- delete contact
+- get connection request
+- get contacts
+- interact connection
+
+#Notification
+- create notification
+- delete notification
+- get notification
+
+#Split
+- get splits (user created, pending, due) decide based on some action
+- getsplitparticipants
+- create split
+- edit split (both for general editing and status modification)
+- delete split
+- paydues
+
+----add a column in split for due amount, which is deducted each time a participant pays, and the paydues sp have a check on it when it becomes 0 then the split is marked paid
