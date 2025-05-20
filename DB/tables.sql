@@ -49,7 +49,7 @@ create table [dbo].[SplitContacts] (
 	CONSTRAINT FK_SplitContacts_Splits FOREIGN KEY (SplitID) REFERENCES dbo.Splits(SplitID),
 	CONSTRAINT FK_SplitContacts_Users FOREIGN KEY (SplitParticipantID) REFERENCES dbo.Users(UserID),
 	CONSTRAINT CHK_SplitStatus 
-	CHECK (SplitStatus in ('PENDING_APPROVAL', 'APPROVED_UNPAID', 'APPROVED_PAID'))
+	CHECK (SplitStatus in ('PENDING_APPROVAL', 'APPROVED_UNPAID', 'APPROVED_PAID', 'REJECTED'))
 );
 
 create table [dbo].[Notifications] (

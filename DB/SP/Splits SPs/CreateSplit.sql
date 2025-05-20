@@ -1,0 +1,10 @@
+create procedure CreateSplit
+	@UserID int,
+	@SplitDescription varchar(100),
+	@Deadline DateTime,
+	@SplitAmount deciaml(10,2)
+as
+begin
+	insert into Splits (CreatedBy, SplitDescription, Deadline, SplitAmount)
+	values (@UserID, @SplitDescription, @Deadline, @SplitAmount);
+end

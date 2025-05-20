@@ -73,11 +73,15 @@ Stored Procedures
 - get notification
 
 #Split
-- get splits (user created, pending, due) decide based on some action
-- getsplitparticipants
-- create split
-- edit split (both for general editing and status modification)
-- delete split
-- paydues
+- get splits (user created, pending, due) decide based on some action - done
+- getsplitparticipants - done
+- create split - done
+- add split participant - done
+- remove split participant- done
+- edit split - not now
+- TOGGLE split request - done
+- delete split - (yet to be decined, if delete whole thing w/ fk on delete cascade or trigger flag - will need changes in getter SPs)
+- paydues - done
 
-----add a column in split for due amount, which is deducted each time a participant pays, and the paydues sp have a check on it when it becomes 0 then the split is marked paid
+----add a column in split for due amount, which is deducted each time a participant pays, 
+--and the paydues sp have a check on it when it becomes 0 then the split is marked paid
