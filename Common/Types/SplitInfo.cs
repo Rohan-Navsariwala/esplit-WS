@@ -15,6 +15,6 @@ namespace Common.Types
 		public DateTime CreatedOn { get; set; }
 		public DateTime UpdatedOn { get; set; }
 		public DateTime Deadline {  get; set; }
-		public bool isClosed { get; set; }
+		public bool IsClosed { get; set; }
 	}
 }

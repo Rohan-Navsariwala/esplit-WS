@@ -1,6 +1,6 @@
 create procedure ToggleSplitRequest
 	@SplitID int,
-	@UserID int
+	@UserID int,
 	@Change varchar(30)
 as
 begin 
