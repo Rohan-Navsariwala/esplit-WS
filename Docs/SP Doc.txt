@@ -1,0 +1,79 @@
+--Contact SP----------------------------
+#CreateConnection
+inp -> (UserID, toUserName)
+ret -> 
+
+#DeleteContact
+inp -> (ContactID)
+ret ->
+
+#GetConnectionReq
+inp -> (UserID)
+ret -> List<Contact>
+
+#GetContacts
+inp -> (UserID, ConnectionStatus)
+ret -> List<UserContactDto>
+
+#InteractConnection
+inp -> (ContactID, ConnectionStatus)
+ret -> 
+
+--Notification SP-----------------------
+#CreateNotification
+inp -> (NotifyFor, NotificationText, NotificationType)
+ret -> 
+
+#DeleteNotification
+inp -> (NotificationID, UserID)
+ret -> 
+
+#GetNotifications
+inp -> (UserID)
+ret -> List<Notification>
+
+--Splits SP-----------------------------
+#AddSplitParticipant
+inp -> (SplitID, UserID, OweAmount)
+ret -> 
+
+#CreateSplit
+inp -> (UserID, SplitDescription, Deadline, SplitAmount)
+ret -> 
+
+#DeleteSplitParticipant
+inp -> (SplitID, UserID)
+ret ->
+
+#GetSplitParticipants
+inp -> (SplitID)
+ret -> List<SplitContactDto>
+
+#GetSplits
+inp -> (UserID, SplitStatus)
+ret -> List<Split>
+
+#PayDue
+inp -> (UserID, SplitID)
+ret -> 
+
+#ToggleSplitRequest
+inp -> (SplitID, UserID, Change)
+ret -> 
+
+--User SP-------------------------------
+#CreateUser
+inp -> (UserName, FullName, PasswordHash)
+ret -> 
+
+#DeleteUser
+inp -> (UserID)
+ret -> 
+
+#GetUserByID
+inp -> (UserID)
+ret -> List<User>
+
+#GetUserByUserName
+inp -> (UserName)
+ret -> List<User>
