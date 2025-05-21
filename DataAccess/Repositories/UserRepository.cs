@@ -18,69 +18,90 @@ namespace DataAccess.Repositories
 		public void CreateUser(User user)
 		{
 			using (var connection = new SqlConnection(_connectionString))
-			using (var command = new SqlCommand("CreateUser", connection))
 			{
-				command.CommandType = CommandType.StoredProcedure;
-				command.Parameters.AddWithValue("@FullName", user.FullName);
-				command.Parameters.AddWithValue("@UserName", user.UserName);
-				command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
+				using (var command = new SqlCommand("CreateUser", connection))
+				{
+					command.CommandType = CommandType.StoredProcedure;
+					command.Parameters.AddWithValue("@UserName", user.UserName);
+					command.Parameters.AddWithValue("@FullName", user.FullName);
+					command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
 
-				connection.Open();
-				command.ExecuteNonQuery();
+					connection.Open();
+					command.ExecuteNonQuery();
+				}
 			}
 		}
 
 		public User GetUserById(int userID)
 		{
 			using (var connection = new SqlConnection(_connectionString))
-			using (var command = new SqlCommand("GetUserById", connection))
 			{
-				command.CommandType = CommandType.StoredProcedure;
-				command.Parameters.AddWithValue("@UserID", userID);
-
-				connection.Open();
-				using (var reader = command.ExecuteReader())
+				using (var command = new SqlCommand("GetUserByID", connection))
 				{
-					if (reader.Read())
+					command.CommandType = CommandType.StoredProcedure;
+					command.Parameters.AddWithValue("@UserID", userID);
+
+					connection.Open();
+					using (var reader = command.ExecuteReader())
 					{
-						return new User {
-							UserID = (int)reader["UserID"],
-							FullName = reader["FullName"].ToString(),
-							UserName = reader["UserName"].ToString(),
-							IsActive = bool.TryParse(reader["IsActive"]),
-							CreatedAt = (DateTime)reader["CreatedAt"]
-						};
+						if (reader.Read())
+						{
+							return new User {
+								UserID = (int)reader["UserID"],
+								FullName = reader["FullName"].ToString(),
+								UserName = reader["UserName"].ToString(),
+								IsActive = Convert.ToBoolean(reader["IsActive"]),
+								CreatedAt = (DateTime)reader["CreatedAt"]
+							};
+						}
 					}
 				}
 			}
 			return null;
 		}
 
-		public User GetUserByUserName(string username)
+		public User GetUserByUserName(string userName)
 		{
 			using (var connection = new SqlConnection(_connectionString))
-			using (var command = new SqlCommand("GetUserByUserName", connection))
 			{
-				command.CommandType = CommandType.StoredProcedure;
-				command.Parameters.AddWithValue("@UserName", username);
-
-				connection.Open();
-				using (var reader = command.ExecuteReader())
+				using (var command = new SqlCommand("GetUserByUserName", connection))
 				{
-					if (reader.Read())
+					command.CommandType = CommandType.StoredProcedure;
+					command.Parameters.AddWithValue("@UserName", userName);
+
+					connection.Open();
+					using (var reader = command.ExecuteReader())
 					{
-						return new User {
-							UserID = (int)reader["UserID"],
-							FullName = reader["FullName"].ToString(),
-							UserName = reader["UserName"].ToString(),
-							PasswordHash = reader["PasswordHash"].ToString(),
-							IsActive = bool.TryParse(reader["IsActive"]),
-							CreatedAt = (DateTime)reader["CreatedAt"]
-						};
+						if (reader.Read())
+						{
+							return new User {
+								UserID = (int)reader["UserID"],
+								FullName = reader["FullName"].ToString(),
+								UserName = reader["UserName"].ToString(),
+								PasswordHash = reader["PasswordHash"].ToString(),
+								IsActive = Convert.ToBoolean(reader["IsActive"]),
+								CreatedAt = (DateTime)reader["CreatedAt"]
+							};
+						}
 					}
 				}
 			}
 			return null;
+		}
+
+		public void DeleteUser(string userID)
+		{
+			using (var connection = new SqlConnection(_connectionString))
+			{
+				using (var command = new SqlCommand("DeleteUser", connection))
+				{
+					command.CommandType = CommandType.StoredProcedure;
+					command.Parameters.AddWithValue("@UserID", userID);
+
+					connection.Open();
+					command.ExecuteNonQuery();
+				}
+			}
 		}
 
 	}
