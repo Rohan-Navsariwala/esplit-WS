@@ -4,8 +4,8 @@ using Common.Types;
 
 namespace esplit_API.Controllers
 {
-	[Route("api/[controller]")]
-	[ApiController]
+	//[Route("api/[controller]")]
+	//[ApiController]
 	public class ContactsController : ControllerBase
 	{
 		public ContactsController() { }

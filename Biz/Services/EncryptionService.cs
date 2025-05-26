@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Services
+namespace Biz.Services
 {
 	public class EncryptionService
 	{

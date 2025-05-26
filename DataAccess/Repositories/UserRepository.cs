@@ -3,6 +3,7 @@ using Common.Types;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using Common;
 
 namespace DataAccess.Repositories
 {
@@ -12,10 +13,10 @@ namespace DataAccess.Repositories
 
 		public UserRepository()
 		{
-			_connectionString = "";
+			_connectionString = Configs.connectionString;
 		}
 
-		public void CreateUser(User user)
+		public bool CreateUser(User user)
 		{
 			using (var connection = new SqlConnection(_connectionString))
 			{
@@ -27,7 +28,14 @@ namespace DataAccess.Repositories
 					command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
 
 					connection.Open();
-					command.ExecuteNonQuery();
+					if(command.ExecuteNonQuery() > 0)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
 				}
 			}
 		}
@@ -89,7 +97,7 @@ namespace DataAccess.Repositories
 			return null;
 		}
 
-		public void DeleteUser(string userID)
+		public bool DeleteUser(string userID)
 		{
 			using (var connection = new SqlConnection(_connectionString))
 			{
@@ -99,7 +107,14 @@ namespace DataAccess.Repositories
 					command.Parameters.AddWithValue("@UserID", userID);
 
 					connection.Open();
-					command.ExecuteNonQuery();
+					if (command.ExecuteNonQuery() > 0)
+					{
+						return true;
+					}
+					else
+					{
+						return false;
+					}
 				}
 			}
 		}

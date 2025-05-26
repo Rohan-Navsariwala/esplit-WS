@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Common.Types;
+using Biz.Services;
+using DataAccess.Repositories;
+using System.Diagnostics.Eventing.Reader;
 
 namespace esplit_API.Controllers
 {
@@ -10,21 +13,72 @@ namespace esplit_API.Controllers
 	{
 		public UsersController() { }
 
-		public User GetUser()
+		[HttpGet("{user}")]
+		public IActionResult GetUser(string user)
 		{
-			//here you have to define logic to get by either id or name
-			return new User();
+			UserRepository userRepository = new UserRepository();
+			User userData;
+			
+			if(int.TryParse(user, out int userID))
+			{
+				userData = userRepository.GetUserById(userID);
+			}
+			else
+			{
+				userData = userRepository.GetUserByUserName(user);
+			}
+
+			if (userData != null)
+			{
+				return Ok(userData);
+			}
+			else
+			{
+				return NotFound("User Not Found :(");
+			}
 		}
 
-		public IActionResult DeleteUser()
+		[HttpDelete("{userID}")]
+		public IActionResult DeleteUser(string userID)
 		{
-			//basically here i will be setting status to inactive
-			return null;
-		} 
+			UserRepository userRepository = new UserRepository();
+			if (userRepository.DeleteUser(userID))
+			{
+				return Ok("User Deleted Successfully");
+			}
+			else
+			{
+				return BadRequest();
+			}
+		}
 
-		public IActionResult CreateUser()
+		[HttpPost]
+		public IActionResult CreateUser(User user)
 		{
-			return null;
+			RegistrationService registrationService = new RegistrationService();
+			if (registrationService.RegisterUser(user))
+			{
+				return Ok("User Created Successfully :)");
+			}
+			else
+			{
+				return Conflict("User Already Exists :(");
+			}
+		}
+
+		[HttpPost("{auth}")]
+		public IActionResult AuthenticateUser(string userName, string password)
+		{
+			AuthService authService = new AuthService();
+			User userData = authService.Authenticate(userName, password);
+			if(userData != null)
+			{
+				return Ok();
+			}
+			else
+			{
+				return BadRequest();
+			}
 		}
 	}
 }
