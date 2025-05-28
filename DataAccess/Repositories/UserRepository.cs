@@ -9,13 +9,6 @@ namespace DataAccess.Repositories
 {
 	public class UserRepository
 	{
-		private readonly string _connectionString;
-
-		public UserRepository()
-		{
-			_connectionString = Configs.connectionString;
-		}
-
 		public bool CreateUser(User user)
 		{
 			Dictionary<string, object> UserInfo = new Dictionary<string, object>()

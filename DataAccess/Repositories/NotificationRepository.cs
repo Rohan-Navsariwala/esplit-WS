@@ -8,78 +8,45 @@ namespace DataAccess.Repositories
 {
 	public class NotificationRepository
 	{
-		private readonly string _connectionString;
-
-		public NotificationRepository()
+		public bool CreateNotification(Notification notification)
 		{
-			_connectionString = "";
+			Dictionary<string, object> _notifications = new Dictionary<string, object>() 
+			{
+				{ "NotifyFor", notification.NotifyFor },
+				{ "ActionPerformedBy", notification.ActionPerformedBy },
+				{ "NotificationText", notification.NotificationText },
+				{ "NotificationType", notification.NotificationType }
+			};
+			return DataAccess.dbMethods.DbUpdate("CreateNotification", _notifications);
 		}
 
-		public void CreateNotification(Notification notification)
+		public bool DeleteNotification(int notificationID, int userID) 
 		{
-			using (var connection = new SqlConnection(_connectionString))
+			Dictionary<string, object> parameters = new Dictionary<string, object>
 			{
-				using (var command = new SqlCommand("CreateNotification", connection))
-				{
-					command.CommandType = CommandType.StoredProcedure;
-					command.Parameters.AddWithValue("@NotifyFor", notification.NotifyFor);
-					command.Parameters.AddWithValue("@ActionPerformedBy", notification.ActionPerformedBy);
-					command.Parameters.AddWithValue("@NotificationText", notification.NotificationText);
-					command.Parameters.AddWithValue("@NotificationType", notification.NotificationType);
-
-					connection.Open();
-					command.ExecuteNonQuery();
-				}
-			}
-		}
-
-		public void DeleteNotification(int notificationID, int userID) 
-		{
-			using (var connection = new SqlConnection(_connectionString))
-			{
-				using (var command = new SqlCommand("DeleteNotification", connection))
-				{
-					command.CommandType = CommandType.StoredProcedure;
-					command.Parameters.AddWithValue("@NotificationID", notificationID);
-					command.Parameters.AddWithValue("@UserID", userID);
-
-					connection.Open();
-					command.ExecuteNonQuery();
-				}
-			}
+				{ "NotificationID", notificationID },
+				{ "UserID", userID }
+			};
+			return DataAccess.dbMethods.DbUpdate("DeleteNotification", parameters);
 		}
 
 		public List<Notification> GetNotifications(int userID)
 		{
-			using (var connection = new SqlConnection(_connectionString))
+			Dictionary<string, object> parameters = new Dictionary<string, object>
 			{
-				using (var command = new SqlCommand("GetNotifications", connection))
-				{
-					command.CommandType = CommandType.StoredProcedure;
-					command.Parameters.AddWithValue("@UserID", userID);
-
-					connection.Open();
-					using (SqlDataReader reader = command.ExecuteReader())
-					{
-						List<Notification> notifications = new List<Notification>();
-						while (reader.Read())
-						{
-							notifications.Add(new Notification()
-							{
-								NotificationID = (int)reader["NotificationID"],
-								NotifyFor = (int)reader["NotifyFor"],
-								ActionPerformedBy = reader["ActionPerformedBy"].ToString(),
-								NotificationText = reader["NotificationText"].ToString(),
-								NotificationType = (NotificationType)Enum.Parse(typeof(NotificationType), reader["NotificationType"].ToString()),
-								isDeleted = Convert.ToBoolean(reader["IsDeleted"]),
-
-							});
-						}
-						return notifications;
-					}
-				}
-			}
-			return null;
+				{ "UserID", userID }
+			};
+			return DataAccess.dbMethods.DbSelect<Notification>("GetNotifications", parameters, reader =>
+			{
+				return new Notification {
+					NotificationID = (int)reader["NotificationID"],
+					NotifyFor = (int)reader["NotifyFor"],
+					ActionPerformedBy = reader["ActionPerformedBy"].ToString(),
+					NotificationText = reader["NotificationText"].ToString(),
+					NotificationType = (NotificationType)Enum.Parse(typeof(NotificationType), reader["NotificationType"].ToString()),
+					isDeleted = Convert.ToBoolean(reader["IsDeleted"]),
+				};
+			});
 		}
 	}
 }

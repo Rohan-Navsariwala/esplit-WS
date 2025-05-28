@@ -11,13 +11,6 @@ namespace DataAccess.Repositories
 {
 	public class ContactRepository
 	{
-		private readonly string _connectionString;
-
-		public ContactRepository() 
-		{
-			_connectionString = "";
-		}
-
 		public bool CreateConnection(int userID, string toUserName)
 		{
 			Dictionary<string, object> parameters = new Dictionary<string, object>
