@@ -2,7 +2,7 @@ create procedure CreateSplit
 	@CreatedBy int,
 	@SplitDescription varchar(100),
 	@Deadline DateTime,
-	@SplitAmount deciaml(10,2)
+	@SplitAmount decimal(10,2)
 as
 begin
 	insert into Splits (CreatedBy, SplitDescription, Deadline, SplitAmount)

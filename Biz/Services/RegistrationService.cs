@@ -20,7 +20,7 @@ namespace Biz.Services
 
 		public bool RegisterUser(User user)
 		{
-			if (isExistingUser(user.UserName))
+			if (!isExistingUser(user.UserName))
 			{
 				user.PasswordHash = _encryptionService.ComputeSHA256Hash(user.PasswordHash);
 				_userRepository.CreateUser(user);

@@ -7,7 +7,7 @@ BEGIN
     BEGIN
         SELECT *
         FROM dbo.Splits
-        WHERE UserID = @UserID
+        WHERE CreatedBy = @UserID
           AND isClosed = 0;
     END
     ELSE
@@ -22,4 +22,3 @@ BEGIN
               );
     END
 END
-

@@ -66,14 +66,15 @@ namespace esplit_API.Controllers
 			}
 		}
 
-		[HttpPost("{auth}")]
+		[HttpPost]
+		[Route("auth")]
 		public IActionResult AuthenticateUser(string userName, string password)
 		{
 			AuthService authService = new AuthService();
 			User userData = authService.Authenticate(userName, password);
 			if(userData != null)
 			{
-				return Ok();
+				return Ok(userData);
 			}
 			else
 			{

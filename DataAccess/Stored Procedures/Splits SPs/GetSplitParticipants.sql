@@ -3,6 +3,6 @@ create procedure GetSplitParticipants
 as
 begin
 	SELECT * FROM SplitContacts c
-        INNER JOIN Users u ON c.SplitID = u.SplitID
-		WHERE u.SplitID = @SplitID;
+        INNER JOIN Users u ON c.SplitParticipantID = u.UserID
+		WHERE c.SplitID = @SplitID;
 END
