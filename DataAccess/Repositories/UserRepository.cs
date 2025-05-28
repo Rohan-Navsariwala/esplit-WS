@@ -18,26 +18,33 @@ namespace DataAccess.Repositories
 
 		public bool CreateUser(User user)
 		{
-			using (var connection = new SqlConnection(_connectionString))
-			{
-				using (var command = new SqlCommand("CreateUser", connection))
-				{
-					command.CommandType = CommandType.StoredProcedure;
-					command.Parameters.AddWithValue("@UserName", user.UserName);
-					command.Parameters.AddWithValue("@FullName", user.FullName);
-					command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
+			//using (var connection = new SqlConnection(_connectionString))
+			//{
+			//	using (var command = new SqlCommand("CreateUser", connection))
+			//	{
+			//		command.CommandType = CommandType.StoredProcedure;
+			//		command.Parameters.AddWithValue("@UserName", user.UserName);
+			//		command.Parameters.AddWithValue("@FullName", user.FullName);
+			//		command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
 
-					connection.Open();
-					if(command.ExecuteNonQuery() > 0)
-					{
-						return true;
-					}
-					else
-					{
-						return false;
-					}
-				}
-			}
+			//		connection.Open();
+			//		if(command.ExecuteNonQuery() > 0)
+			//		{
+			//			return true;
+			//		}
+			//		else
+			//		{
+			//			return false;
+			//		}
+			//	}
+			//}
+
+			Dictionary<string, string> UserInfo = new Dictionary<string, string>();
+			UserInfo.Add("UserName", user.UserName);
+			UserInfo.Add("FullName", user.FullName);
+			UserInfo.Add("PasswordHash", user.PasswordHash);
+
+			return DataAccess.dbMehods.DbUpdate("CreateUser", UserInfo);
 		}
 
 		public User GetUserById(int userID)

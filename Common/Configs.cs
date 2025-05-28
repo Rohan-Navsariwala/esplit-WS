@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Common
 {
-	public static class Configs
+	public class Configs
 	{
-		public static string connectionString = "Data Source=ALBATROSS\\SQLEXPRESS;Initial Catalog=esplit;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False";
+		public static readonly string? connectionString;
 	}
 }
