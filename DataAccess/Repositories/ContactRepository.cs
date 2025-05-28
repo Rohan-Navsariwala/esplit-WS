@@ -18,96 +18,60 @@ namespace DataAccess.Repositories
 			_connectionString = "";
 		}
 
-		public void CreateConnection(int userID, string toUserName)
+		public bool CreateConnection(int userID, string toUserName)
 		{
-			using(SqlConnection connection = new SqlConnection(_connectionString))
+			Dictionary<string, object> parameters = new Dictionary<string, object>
 			{
-				using (SqlCommand command = new SqlCommand("CreateConnection", connection))
-				{
-					command.CommandType = CommandType.StoredProcedure;
-					command.Parameters.AddWithValue("@UserID", userID);
-					command.Parameters.AddWithValue("@toUserName", toUserName);
-
-					connection.Open();
-					command.ExecuteNonQuery();
-				}
-			}
+				{ "UserID", userID },
+				{ "toUserName", toUserName }
+			};
+			return DataAccess.dbMethods.DbUpdate("CreateConnection", parameters);
 		}
 
-		public void DeleteConnection(int contactID) 
+		public bool DeleteConnection(int contactID) 
 		{
-			using (SqlConnection connection = new SqlConnection(_connectionString))
+			Dictionary<string, object> parameters = new Dictionary<string, object>
 			{
-				using (SqlCommand command = new SqlCommand("DeleteConnection", connection))
-				{
-					command.CommandType = CommandType.StoredProcedure;
-					command.Parameters.AddWithValue("@ContactID", contactID);
-
-					connection.Open();
-					command.ExecuteNonQuery();
-				}
-			}
+				{ "ContactID", contactID }
+			};
+			return DataAccess.dbMethods.DbUpdate("DeleteConnection", parameters);
 		}
 
 		public List<ConnectionDto> GetConnections(int userID, string connectionStatus)
 		{
-			using (var connection = new SqlConnection(_connectionString))
+			Dictionary<string, object> parameters = new Dictionary<string, object>
 			{
-				using (var command = new SqlCommand("GetContacts", connection))
-				{
-					command.CommandType = CommandType.StoredProcedure;
-					command.Parameters.AddWithValue("@UserID", userID);
-					command.Parameters.AddWithValue("@ConnectionStatus", connectionStatus);
-
-					connection.Open();
-					using (SqlDataReader reader = command.ExecuteReader())
-					{
-						List<ConnectionDto> connections = new List<ConnectionDto>();
-						while (reader.Read())
-						{
-							connections.Add(new ConnectionDto()
-							{
-								UserData = new User()
-								{
-									UserID = (int)reader["UserID"],
-									UserName = reader["UserName"].ToString(),
-									FullName = reader["FullName"].ToString(),
-									CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
-									IsActive = Convert.ToBoolean(reader["IsActive"]),
-
-								},
-
-								ContactData = new Contact()
-								{
-									ContactID = (int)reader["ContactID"],
-									ConnectionInit = Convert.ToDateTime(reader["ConnectionInit"]),
-									ApprovedOn = Convert.ToDateTime(reader["ApprovedOn"]),
-									ConnectionStatus = (ConnectionStatus)Enum.Parse(typeof(ConnectionStatus), reader["ConnectionStatus"].ToString()),
-								}
-
-							});
-						}
-						return connections;
+				{ "UserID", userID },
+				{ "ConnectionStatus", connectionStatus }
+			};
+			return DataAccess.dbMethods.DbSelect<ConnectionDto>("GetContacts", parameters, reader =>
+			{
+				return new ConnectionDto {
+					UserData = new User {
+						UserID = (int)reader["UserID"],
+						UserName = reader["UserName"].ToString(),
+						FullName = reader["FullName"].ToString(),
+						CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
+						IsActive = Convert.ToBoolean(reader["IsActive"]),
+					},
+					ContactData = new Contact {
+						ContactID = (int)reader["ContactID"],
+						ConnectionInit = Convert.ToDateTime(reader["ConnectionInit"]),
+						ApprovedOn = Convert.ToDateTime(reader["ApprovedOn"]),
+						ConnectionStatus = (ConnectionStatus)Enum.Parse(typeof(ConnectionStatus), reader["ConnectionStatus"].ToString()),
 					}
-				}
-			}
-			return null;
+				};
+			});
 		}
 
-		public void InteractConnection(int userID, string connectionStatus)
+		public bool InteractConnection(int userID, string connectionStatus)
 		{
-			using (SqlConnection connection = new SqlConnection(_connectionString))
+			Dictionary<string, object> parameters = new Dictionary<string, object>
 			{
-				using (SqlCommand command = new SqlCommand("InteractConnection", connection))
-				{
-					command.CommandType = CommandType.StoredProcedure;
-					command.Parameters.AddWithValue("@UserID", userID);
-					command.Parameters.AddWithValue("@ConnectionStatus", connectionStatus);
-
-					connection.Open();
-					command.ExecuteNonQuery();
-				}
-			}
+				{ "UserID", userID },
+				{ "ConnectionStatus", connectionStatus }
+			};
+			return DataAccess.dbMethods.DbUpdate("InteractConnection", parameters);
 		}
 	}
 }

@@ -18,18 +18,21 @@ namespace DataAccess.Repositories
 
 		public bool CreateUser(User user)
 		{
-			Dictionary<string, object> UserInfo = new Dictionary<string, object>();
-			UserInfo.Add("UserName", user.UserName);
-			UserInfo.Add("FullName", user.FullName);
-			UserInfo.Add("PasswordHash", user.PasswordHash);
-
+			Dictionary<string, object> UserInfo = new Dictionary<string, object>()
+			{
+				{"UserID", user.UserID },
+				{ "IsActive", user.IsActive },
+				{ "CreatedAt", user.CreatedAt }
+			};
 			return DataAccess.dbMethods.DbUpdate("CreateUser", UserInfo);
 		}
 
 		public User GetUserById(int userID)
 		{
-			Dictionary<string, object> UserInfo = new Dictionary<string, object>();
-			UserInfo.Add("UserID", userID);
+			Dictionary<string, object> UserInfo = new Dictionary<string, object>()
+			{
+				{ "UserID", userID }
+			};
 			List<User> users = dbMethods.DbSelect("GetUserByID", UserInfo, reader =>
 			{
 				return new User {
@@ -45,10 +48,12 @@ namespace DataAccess.Repositories
 
 		public User GetUserByUserName(string userName)
 		{
-			Dictionary<string, object> UserInfo = new Dictionary<string, object>();
-			UserInfo.Add("UserName", userName);
+			Dictionary<string, object> UserInfo = new Dictionary<string, object>()
+			{
+				{"UserName", userName}
+			};
 
-			List<User> users = dbMethods.DbSelect("GetUserByUserName", UserInfo, reader =>
+			List<User> users = dbMethods.DbSelect<User>("GetUserByUserName", UserInfo, reader =>
 			{
 				return new User {
 					UserID = (int)reader["UserID"],
@@ -59,15 +64,15 @@ namespace DataAccess.Repositories
 					CreatedAt = (DateTime)reader["CreatedAt"]
 				};
 			});
-
 			return users.Count > 0 ? users[0] : null;
-
 		}
 
 		public bool DeleteUser(string userID)
 		{
-			Dictionary<string, object> UserInfo = new Dictionary<string, object>();
-			UserInfo.Add("UserID", userID);
+			Dictionary<string, object> UserInfo = new Dictionary<string, object>()
+			{
+				{ "UserID", userID }
+			};
 			return DataAccess.dbMethods.DbUpdate("DeleteUser", UserInfo);
 		}
 	}

@@ -28,6 +28,12 @@ namespace DataAccess
 			}
 		}
 
+		/// <summary>
+		/// Executes a stored procedure with the provided parameters and returns true if the operation(insert, delete, update) was successful.
+		/// </summary>
+		/// <param name="storedProcedure"></param>
+		/// <param name="parameters"></param>
+		/// <returns></returns>
 		public static bool DbUpdate(string storedProcedure, Dictionary<string, object > parameters)
 		{
 			if( !string.IsNullOrWhiteSpace(storedProcedure) && parameters.Count() > 0)
@@ -56,6 +62,14 @@ namespace DataAccess
 			return false;
 		}
 
+		/// <summary>
+		/// Executes a stored procedure with the provided parameters and maps the results to a list of type T.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="storedProcedure"></param>
+		/// <param name="parameters"></param>
+		/// <param name="map"></param>
+		/// <returns></returns>
 		public static List<T> DbSelect<T>(string storedProcedure, Dictionary<string, object> parameters, Func<SqlDataReader,T> map)
 		{
 			List<T> results = new List<T>();
