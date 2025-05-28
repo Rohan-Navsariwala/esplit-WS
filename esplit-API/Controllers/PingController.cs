@@ -15,7 +15,7 @@ namespace esplit_API.Controllers
 		{
 			try
 			{
-				if (dbMehods.PingDatabase())
+				if (dbMethods.PingDatabase())
 					return Ok("Database is reachable.");
 				else
 					return StatusCode(500, "Unexpected DB response.");

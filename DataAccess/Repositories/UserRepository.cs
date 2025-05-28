@@ -18,114 +18,57 @@ namespace DataAccess.Repositories
 
 		public bool CreateUser(User user)
 		{
-			//using (var connection = new SqlConnection(_connectionString))
-			//{
-			//	using (var command = new SqlCommand("CreateUser", connection))
-			//	{
-			//		command.CommandType = CommandType.StoredProcedure;
-			//		command.Parameters.AddWithValue("@UserName", user.UserName);
-			//		command.Parameters.AddWithValue("@FullName", user.FullName);
-			//		command.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
-
-			//		connection.Open();
-			//		if(command.ExecuteNonQuery() > 0)
-			//		{
-			//			return true;
-			//		}
-			//		else
-			//		{
-			//			return false;
-			//		}
-			//	}
-			//}
-
-			Dictionary<string, string> UserInfo = new Dictionary<string, string>();
+			Dictionary<string, object> UserInfo = new Dictionary<string, object>();
 			UserInfo.Add("UserName", user.UserName);
 			UserInfo.Add("FullName", user.FullName);
 			UserInfo.Add("PasswordHash", user.PasswordHash);
 
-			return DataAccess.dbMehods.DbUpdate("CreateUser", UserInfo);
+			return DataAccess.dbMethods.DbUpdate("CreateUser", UserInfo);
 		}
 
 		public User GetUserById(int userID)
 		{
-			using (var connection = new SqlConnection(_connectionString))
+			Dictionary<string, object> UserInfo = new Dictionary<string, object>();
+			UserInfo.Add("UserID", userID);
+			List<User> users = dbMethods.DbSelect("GetUserByID", UserInfo, reader =>
 			{
-				using (var command = new SqlCommand("GetUserByID", connection))
-				{
-					command.CommandType = CommandType.StoredProcedure;
-					command.Parameters.AddWithValue("@UserID", userID);
-
-					connection.Open();
-					using (var reader = command.ExecuteReader())
-					{
-						if (reader.Read())
-						{
-							return new User {
-								UserID = (int)reader["UserID"],
-								FullName = reader["FullName"].ToString(),
-								UserName = reader["UserName"].ToString(),
-								IsActive = Convert.ToBoolean(reader["IsActive"]),
-								CreatedAt = (DateTime)reader["CreatedAt"]
-							};
-						}
-					}
-				}
-			}
-			return null;
+				return new User {
+					UserID = (int)reader["UserID"],
+					FullName = reader["FullName"].ToString(),
+					UserName = reader["UserName"].ToString(),
+					IsActive = Convert.ToBoolean(reader["IsActive"]),
+					CreatedAt = (DateTime)reader["CreatedAt"]
+				};
+			});
+			return users.Count > 0 ? users[0] : null;
 		}
 
 		public User GetUserByUserName(string userName)
 		{
-			using (var connection = new SqlConnection(_connectionString))
-			{
-				using (var command = new SqlCommand("GetUserByUserName", connection))
-				{
-					command.CommandType = CommandType.StoredProcedure;
-					command.Parameters.AddWithValue("@UserName", userName);
+			Dictionary<string, object> UserInfo = new Dictionary<string, object>();
+			UserInfo.Add("UserName", userName);
 
-					connection.Open();
-					using (var reader = command.ExecuteReader())
-					{
-						if (reader.Read())
-						{
-							return new User {
-								UserID = (int)reader["UserID"],
-								FullName = reader["FullName"].ToString(),
-								UserName = reader["UserName"].ToString(),
-								PasswordHash = reader["PasswordHash"].ToString(),
-								IsActive = Convert.ToBoolean(reader["IsActive"]),
-								CreatedAt = (DateTime)reader["CreatedAt"]
-							};
-						}
-					}
-				}
-			}
-			return null;
+			List<User> users = dbMethods.DbSelect("GetUserByUserName", UserInfo, reader =>
+			{
+				return new User {
+					UserID = (int)reader["UserID"],
+					FullName = reader["FullName"].ToString(),
+					UserName = reader["UserName"].ToString(),
+					PasswordHash = reader["PasswordHash"].ToString(),
+					IsActive = Convert.ToBoolean(reader["IsActive"]),
+					CreatedAt = (DateTime)reader["CreatedAt"]
+				};
+			});
+
+			return users.Count > 0 ? users[0] : null;
+
 		}
 
 		public bool DeleteUser(string userID)
 		{
-			using (var connection = new SqlConnection(_connectionString))
-			{
-				using (var command = new SqlCommand("DeleteUser", connection))
-				{
-					command.CommandType = CommandType.StoredProcedure;
-					command.Parameters.AddWithValue("@UserID", userID);
-
-					connection.Open();
-					if (command.ExecuteNonQuery() > 0)
-					{
-						return true;
-					}
-					else
-					{
-						return false;
-					}
-				}
-			}
+			Dictionary<string, object> UserInfo = new Dictionary<string, object>();
+			UserInfo.Add("UserID", userID);
+			return DataAccess.dbMethods.DbUpdate("DeleteUser", UserInfo);
 		}
-
 	}
-
 }

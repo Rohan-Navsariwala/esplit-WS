@@ -11,10 +11,9 @@ using Microsoft.IdentityModel.Protocols;
 
 namespace DataAccess
 {
-	public static class dbMehods
+	public static class dbMethods
 	{
-		static string _connectionString = System.Configuration.ConfigurationManager.AppSettings["wString"];
-
+		public static string _connectionString;
 		
 		public static bool PingDatabase()
 		{
@@ -29,7 +28,7 @@ namespace DataAccess
 			}
 		}
 
-		public static bool DbUpdate(string storedProcedure, Dictionary<string, string> parameters)
+		public static bool DbUpdate(string storedProcedure, Dictionary<string, object > parameters)
 		{
 			if( !string.IsNullOrWhiteSpace(storedProcedure) && parameters.Count() > 0)
 			{
@@ -40,7 +39,7 @@ namespace DataAccess
 						command.CommandType = CommandType.StoredProcedure;
 						foreach (var parameter in parameters)
 						{
-							command.Parameters.AddWithValue($"@{parameter.Key}", parameter.Value);
+							command.Parameters.Add(new SqlParameter($"@{parameter.Key}", parameter.Value ?? DBNull.Value));
 						}
 						connection.Open();
 						if (command.ExecuteNonQuery() > 0)
@@ -57,8 +56,9 @@ namespace DataAccess
 			return false;
 		}
 
-		public static void DbSelect(string storedProcedure, Dictionary<string, string> parameters, out DataTable results)
+		public static List<T> DbSelect<T>(string storedProcedure, Dictionary<string, object> parameters, Func<SqlDataReader,T> map)
 		{
+			List<T> results = new List<T>();
 			if (!string.IsNullOrWhiteSpace(storedProcedure) && parameters.Count() > 0)
 			{
 				using (var connection = new SqlConnection(_connectionString))
@@ -68,19 +68,20 @@ namespace DataAccess
 						command.CommandType = CommandType.StoredProcedure;
 						foreach (var parameter in parameters)
 						{
-							command.Parameters.AddWithValue($"@{parameter.Key}", parameter.Value);
+							command.Parameters.Add(new SqlParameter($"@{parameter.Key}", parameter.Value ?? DBNull.Value));
 						}
 						connection.Open();
 						using (SqlDataReader reader = command.ExecuteReader())
 						{
-							results = new DataTable();
-							results.Load(reader);
-
+							while (reader.Read())
+							{
+								results.Add(map(reader));
+							}
 						}
 					}
 				}
 			}
-			results = null;
+			return results;
 		}
 	}
 }
