@@ -2,9 +2,9 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Biz.Services
+namespace Common.Utils
 {
-	public class EncryptionService
+	public class Encryption
 	{
 		public string ComputeSHA256Hash(string input)
 		{

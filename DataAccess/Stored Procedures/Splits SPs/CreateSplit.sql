@@ -1,4 +1,4 @@
-create procedure CreateSplit
+ALTER procedure CreateSplit
 	@CreatedBy int,
 	@SplitDescription varchar(100),
 	@Deadline DateTime,
@@ -7,4 +7,5 @@ as
 begin
 	insert into Splits (CreatedBy, SplitDescription, Deadline, SplitAmount)
 	values (@CreatedBy, @SplitDescription, @Deadline, @SplitAmount);
+	SELECT SCOPE_IDENTITY();
 end

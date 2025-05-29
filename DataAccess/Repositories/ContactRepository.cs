@@ -11,14 +11,14 @@ namespace DataAccess.Repositories
 {
 	public class ContactRepository
 	{
-		public bool CreateConnection(int userID, string toUserName)
+		public int CreateConnection(int userID, string toUserName)
 		{
 			Dictionary<string, object> parameters = new Dictionary<string, object>
 			{
 				{ "UserID", userID },
 				{ "toUserName", toUserName }
 			};
-			return DataAccess.dbMethods.DbUpdate("CreateConnection", parameters);
+			return (int)DataAccess.dbMethods.DbUpdate("CreateConnection", parameters, true);
 		}
 
 		public bool DeleteConnection(int contactID) 
@@ -27,7 +27,7 @@ namespace DataAccess.Repositories
 			{
 				{ "ContactID", contactID }
 			};
-			return DataAccess.dbMethods.DbUpdate("DeleteConnection", parameters);
+			return (bool)DataAccess.dbMethods.DbUpdate("DeleteConnection", parameters);
 		}
 
 		public List<ConnectionDto> GetConnections(int userID, string connectionStatus)
@@ -64,7 +64,7 @@ namespace DataAccess.Repositories
 				{ "UserID", userID },
 				{ "ConnectionStatus", connectionStatus }
 			};
-			return DataAccess.dbMethods.DbUpdate("InteractConnection", parameters);
+			return (bool)DataAccess.dbMethods.DbUpdate("InteractConnection", parameters);
 		}
 	}
 }

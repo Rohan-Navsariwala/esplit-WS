@@ -19,10 +19,10 @@ namespace DataAccess.Repositories
 				{ "SplitParticipantID", splitContacts.First().SplitParticipantID },
 				{ "OweAmount", splitContacts.First().OweAmount }
 			};
-			return DataAccess.dbMethods.DbUpdate("AddSplitParticipant", parameters);
+			return (bool)DataAccess.dbMethods.DbUpdate("AddSplitParticipant", parameters);
 		}
 
-		public bool CreateSplit(SplitInfo split)
+		public int CreateSplit(SplitInfo split)
 		{
 			Dictionary<string, object> parameters = new Dictionary<string, object>()
 			{
@@ -31,7 +31,7 @@ namespace DataAccess.Repositories
 				{ "SplitDescription", split.SplitDescription },
 				{ "Deadline", split.Deadline },
 			};
-			return DataAccess.dbMethods.DbUpdate("CreateSplit", parameters);
+			return (int)DataAccess.dbMethods.DbUpdate("CreateSplit", parameters, true);
 		}
 
 		public bool DeleteSplitParticipant(int userID, int splitID)
@@ -41,7 +41,7 @@ namespace DataAccess.Repositories
 				{ "UserID", userID },
 				{ "SplitID", splitID }
 			};
-			return DataAccess.dbMethods.DbUpdate("DeleteSplitParticipant", parameters);
+			return (bool)DataAccess.dbMethods.DbUpdate("DeleteSplitParticipant", parameters);
 		}
 
 		public List<ParticipantDto> GetSplitParticipant(int splitID)
@@ -101,7 +101,7 @@ namespace DataAccess.Repositories
 				{ "UserID", userID },
 				{ "SplitID", splitID }
 			};
-			return DataAccess.dbMethods.DbUpdate("PayDue", parameters);
+			return (bool)DataAccess.dbMethods.DbUpdate("PayDue", parameters);
 		}
 
 		public bool ToggleSplitRequest(int userID, int splitID, int change)
@@ -112,7 +112,7 @@ namespace DataAccess.Repositories
 				{ "SplitID", splitID },
 				{ "Change", change }
 			};
-			return DataAccess.dbMethods.DbUpdate("ToggleSplitRequest", parameters);
+			return (bool)DataAccess.dbMethods.DbUpdate("ToggleSplitRequest", parameters);
 		}
 	}
 }

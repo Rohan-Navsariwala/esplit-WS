@@ -8,7 +8,7 @@ namespace DataAccess.Repositories
 {
 	public class NotificationRepository
 	{
-		public bool CreateNotification(Notification notification)
+		public int CreateNotification(Notification notification)
 		{
 			Dictionary<string, object> _notifications = new Dictionary<string, object>() 
 			{
@@ -17,7 +17,7 @@ namespace DataAccess.Repositories
 				{ "NotificationText", notification.NotificationText },
 				{ "NotificationType", notification.NotificationType }
 			};
-			return DataAccess.dbMethods.DbUpdate("CreateNotification", _notifications);
+			return (int)DataAccess.dbMethods.DbUpdate("CreateNotification", _notifications, true);
 		}
 
 		public bool DeleteNotification(int notificationID, int userID) 
@@ -27,7 +27,7 @@ namespace DataAccess.Repositories
 				{ "NotificationID", notificationID },
 				{ "UserID", userID }
 			};
-			return DataAccess.dbMethods.DbUpdate("DeleteNotification", parameters);
+			return (bool)DataAccess.dbMethods.DbUpdate("DeleteNotification", parameters);
 		}
 
 		public List<Notification> GetNotifications(int userID)

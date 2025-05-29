@@ -34,7 +34,7 @@ namespace DataAccess
 		/// <param name="storedProcedure"></param>
 		/// <param name="parameters"></param>
 		/// <returns></returns>
-		public static bool DbUpdate(string storedProcedure, Dictionary<string, object > parameters)
+		public static object DbUpdate(string storedProcedure, Dictionary<string, object > parameters, bool expectScalar = false)
 		{
 			if( !string.IsNullOrWhiteSpace(storedProcedure) && parameters.Count() > 0)
 			{
@@ -48,18 +48,19 @@ namespace DataAccess
 							command.Parameters.Add(new SqlParameter($"@{parameter.Key}", parameter.Value ?? DBNull.Value));
 						}
 						connection.Open();
-						if (command.ExecuteNonQuery() > 0)
+						if (expectScalar)
 						{
-							return true;
+							return command.ExecuteScalar();
 						}
 						else
 						{
-							return false;
+							int rowsAffected = command.ExecuteNonQuery();
+							return rowsAffected > 0;
 						}
 					}
 				}
 			}
-			return false;
+			return expectScalar ? null : false;
 		}
 
 		/// <summary>

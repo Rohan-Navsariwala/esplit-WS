@@ -2,27 +2,27 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Common.Types;
+using Common.Utils;
 using DataAccess.Repositories;
 
 namespace Biz.Services
 {
 	public class RegistrationService
 	{
-		//UserRepository _userRepository;
-		EncryptionService _encryptionService;
+		Encryption _encryption;
 		UserRepository _userRepository;
 
 		public RegistrationService()
 		{
 			_userRepository = new UserRepository();
-			_encryptionService = new EncryptionService();
+			_encryption = new Encryption();
 		}
 
 		public bool RegisterUser(User user)
 		{
 			if (!isExistingUser(user.UserName))
 			{
-				user.PasswordHash = _encryptionService.ComputeSHA256Hash(user.PasswordHash);
+				user.PasswordHash = _encryption.ComputeSHA256Hash(user.PasswordHash);
 				_userRepository.CreateUser(user);
 				return true;
 			}
@@ -30,7 +30,6 @@ namespace Biz.Services
 			{
 				return false;
 			}
-
 		}
 
 		public bool isExistingUser(string userName)

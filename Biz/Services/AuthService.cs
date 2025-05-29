@@ -1,4 +1,5 @@
 ﻿using Common.Types;
+using Common.Utils;
 using DataAccess.Repositories;
 using Newtonsoft.Json;
 using System;
@@ -9,12 +10,12 @@ namespace Biz.Services
 {
 	public class AuthService
 	{
-		private readonly EncryptionService _encryptionService;
+		private readonly Encryption _encryption;
 		private readonly UserRepository _userRepository;
 
 		public AuthService()
 		{
-			_encryptionService = new EncryptionService();
+			_encryption = new Encryption();
 			_userRepository = new UserRepository();
 		}
 
@@ -50,10 +51,9 @@ namespace Biz.Services
 		//	}
 		//}
 
-
 		private bool VerifyPassword(string enteredPassword, string storedHash)
 		{
-			return _encryptionService.ComputeSHA256Hash(enteredPassword) == storedHash;
+			return _encryption.ComputeSHA256Hash(enteredPassword) == storedHash;
 		}
 	}
 }

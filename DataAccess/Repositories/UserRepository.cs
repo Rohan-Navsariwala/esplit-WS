@@ -17,7 +17,7 @@ namespace DataAccess.Repositories
 				{ "IsActive", user.IsActive },
 				{ "CreatedAt", user.CreatedAt }
 			};
-			return DataAccess.dbMethods.DbUpdate("CreateUser", UserInfo);
+			return (bool)DataAccess.dbMethods.DbUpdate("CreateUser", UserInfo);
 		}
 
 		public User GetUserById(int userID)
@@ -66,7 +66,7 @@ namespace DataAccess.Repositories
 			{
 				{ "UserID", userID }
 			};
-			return DataAccess.dbMethods.DbUpdate("DeleteUser", UserInfo);
+			return (bool)DataAccess.dbMethods.DbUpdate("DeleteUser", UserInfo);
 		}
 	}
 }

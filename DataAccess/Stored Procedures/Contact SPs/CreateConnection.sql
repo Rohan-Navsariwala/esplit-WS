@@ -1,4 +1,4 @@
-create procedure CreateConnection
+ALTER procedure CreateConnection
 	@UserID int,
 	@toUserName varchar(30)
 as
@@ -10,4 +10,5 @@ begin
 
 	insert into Contacts (UserID1, UserID2, ConnectionStatus)
 	values (@UserID, @toUserID, 'PENDING');
+	SELECT SCOPE_IDENTITY();
 end
