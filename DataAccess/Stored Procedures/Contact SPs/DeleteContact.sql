@@ -3,6 +3,6 @@ create procedure DeleteContact
 as
 begin
 	update Contacts
-	set ConnectionStatus='DELETED'
+	set ContactStatus='4'
 	WHERE ContactID=@ContactID
 end

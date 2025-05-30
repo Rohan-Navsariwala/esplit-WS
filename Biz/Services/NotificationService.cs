@@ -4,33 +4,34 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Common.Types;
+using DataAccess.Repositories;
 
 namespace Biz.Services
 {
 	public class NotificationService
 	{
-		NotificationService notifyService;
+		NotificationRepository notifyRepo;
 		public NotificationService() 
 		{
-			notifyService = new NotificationService();
+			notifyRepo = new NotificationRepository();
 		}
 
-		public List<Notification> GetNotifications(int userID, string notificationType)
+		public List<Notification> GetNotifications(int userID)
 		{
 			//later we have to add authorization checks before returing any notifications
-			return notifyService.GetNotifications(userID, notificationType);
+			return notifyRepo.GetNotifications(userID);
 		}
 
 		public int CreateNotification(Notification notification)
 		{
 			//auth checks
-			return notifyService.CreateNotification(notification);
+			return notifyRepo.CreateNotification(notification);
 		}
 
 		public bool DeleteNotification(int notificationID, int userID)
 		{
 			//auth checks
-			return notifyService.DeleteNotification(notificationID, userID);
+			return notifyRepo.DeleteNotification(notificationID, userID);
 		}
 	}
 }

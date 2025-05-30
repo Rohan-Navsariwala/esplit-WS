@@ -20,16 +20,9 @@ namespace Common.Types
 
 	public enum ConnectionStatus
 	{
-		[Description("PENDING")]
 		PENDING,
-
-		[Description("APPROVED")]
-		Approved,
-
-		[Description("REJECTED")]
-		Rejected,
-
-		[Description("DELETED")]
-		Deleted
+		APPROVED,
+		REJECTED,
+		DELETED
 	}
 }

@@ -19,13 +19,8 @@ namespace Common.Types
 
 	public enum SplitStatus
 	{
-		[Description("PENDING_APPROVAL")]
-		PendingApproval,
-
-		[Description("APPROVAL_UNPAID")]
-		Approved_Unpaid,
-
-		[Description("APPROVAL_PAID")]
-		Approved_Paid
+		PENDING_APPROVAL,
+		APPROVED_UNPAID,
+		PAID
 	}
 }

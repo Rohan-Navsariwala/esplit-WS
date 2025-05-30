@@ -5,5 +5,5 @@ create procedure AddSplitParticipant
 as
 begin
 	insert into SplitContacts (SplitID, SplitParticipantID, OweAmount, SplitStatus)
-	values (@SplitID, @UserID,@OweAmount, 'PENDING_APPROVAL');
+	values (@SplitID, @UserID,@OweAmount, '0');
 end

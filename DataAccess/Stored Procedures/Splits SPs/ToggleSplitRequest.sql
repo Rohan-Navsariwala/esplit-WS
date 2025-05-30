@@ -1,7 +1,7 @@
 create procedure ToggleSplitRequest
 	@SplitID int,
 	@UserID int,
-	@Change varchar(30)
+	@Change int
 as
 begin 
 	update SplitContacts

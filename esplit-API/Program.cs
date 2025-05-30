@@ -26,7 +26,19 @@ namespace esplit_API
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+			//builder.Services.AddCors(options =>
+			//{
+			//	options.AddDefaultPolicy(policy =>
+			//	{
+			//		policy.AllowAnyOrigin()
+			//			  .AllowAnyMethod()
+			//			  .AllowAnyHeader();
+			//	});
+			//});
+
+			//app.UseCors(); // Add this before app.UseAuthorization()
+
+			app.UseAuthorization();
 
 
             app.MapControllers();

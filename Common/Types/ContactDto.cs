@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Common.Types
 {
-	public class ConnectionDto
+	public class ContactDto
 	{
-		public User UserData { get; set; }
 		public Contact ContactData { get; set; }
+		public User UserData { get; set; }
 
 	}
 }

@@ -12,7 +12,7 @@ namespace DataAccess.Repositories
 {
 	public class ContactRepository
 	{
-		public int CreateConnection(int userID, string toUserName)
+		public int CreateContact(int userID, string toUserName)
 		{
 			Dictionary<string, object> parameters = new Dictionary<string, object>
 			{
@@ -22,7 +22,7 @@ namespace DataAccess.Repositories
 			return Convert.ToInt32(DataAccess.dbMethods.DbUpdate("CreateConnection", parameters, true));
 		}
 
-		public bool DeleteConnection(int contactID) 
+		public bool DeleteContact(int contactID) 
 		{
 			Dictionary<string, object> parameters = new Dictionary<string, object>
 			{
@@ -31,16 +31,16 @@ namespace DataAccess.Repositories
 			return Convert.ToBoolean(DataAccess.dbMethods.DbUpdate("DeleteContact", parameters));
 		}
 
-		public List<ConnectionDto> GetConnections(int userID, string connectionStatus)
+		public List<ContactDto> GetContacts(int userID, string connectionStatus)
 		{
 			Dictionary<string, object> parameters = new Dictionary<string, object>
 			{
 				{ "UserID", userID },
 				{ "ConnectionStatus", connectionStatus }
 			};
-			return DataAccess.dbMethods.DbSelect<ConnectionDto>("GetContacts", parameters, reader =>
+			return DataAccess.dbMethods.DbSelect<ContactDto>("GetContacts", parameters, reader =>
 			{
-				return new ConnectionDto {
+				return new ContactDto {
 					UserData = new User {
 						UserID = (int)reader["UserID"],
 						UserName = reader["UserName"].ToString(),
@@ -53,14 +53,14 @@ namespace DataAccess.Repositories
 						ConnectionInit = Convert.ToDateTime(reader["ConnectionInit"]),
 						ApprovedOn = reader["ApprovedOn"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["ApprovedOn"]),
 						ConnectionStatus = (ConnectionStatus)Enum.Parse(typeof(ConnectionStatus), reader["ConnectionStatus"].ToString()),
-						UserID1 = 0,
-						UserID2 = 0
+						UserID1 = (int)reader["UserID1"],
+						UserID2 = (int)reader["UserID2"]
 					}
 				};
 			});
 		}
 
-		public bool InteractConnection(int contactID, string connectionStatus)
+		public bool InteractContact(int contactID, string connectionStatus)
 		{
 			Dictionary<string, object> parameters = new Dictionary<string, object>
 			{

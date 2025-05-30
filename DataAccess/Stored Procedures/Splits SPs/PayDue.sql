@@ -4,6 +4,6 @@ create procedure PayDue
 as
 begin
 	update SplitContacts
-	set SplitStatus = 'APPROVED_PAID'
+	set SplitStatus = '3'
 	where SplitID = @SplitID and SplitParticipantID = @UserID
 end

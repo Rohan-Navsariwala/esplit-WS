@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿.using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Common.Types;
 using Biz.Services;
@@ -16,10 +16,10 @@ namespace esplit_API.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult GetNotifications(int userID, string notificationType)
+		public IActionResult GetNotifications(int userID)
 		{
 			//auth checks
-			List<Notification> notifications = _notificationService.GetNotifications(userID, notificationType);
+			List<Notification> notifications = _notificationService.GetNotifications(userID);
 			if (notifications != null && notifications.Count > 0)
 			{
 				return Ok(notifications);

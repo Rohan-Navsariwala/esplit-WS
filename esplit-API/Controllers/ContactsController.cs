@@ -10,16 +10,16 @@ namespace esplit_API.Controllers
 	[ApiController]
 	public class ContactsController : ControllerBase
 	{
-		ConnectionService connectionService;
+		ContactService contactService;
 		public ContactsController() 
 		{
-			connectionService = new ConnectionService();
+			contactService = new ContactService();
 		}
 
 		[HttpGet]
 		public IActionResult GetContacts(int userID, string connectionStatus = "APPROVED")
 		{
-			List<ConnectionDto> connections = connectionService.GetConnections(userID, connectionStatus);
+			List<ContactDto> connections = contactService.GetContacts(userID, connectionStatus);
 			if(connections != null && connections.Count > 0)
 			{
 				return Ok(connections);
@@ -33,7 +33,7 @@ namespace esplit_API.Controllers
 		[HttpDelete("{contactID}")]
 		public IActionResult DeleteContact(int contactID)
 		{
-			if (connectionService.DeleteConnection(contactID))
+			if (contactService.DeleteContact(contactID))
 			{
 				return Ok("Connection deleted successfully.");
 			}
@@ -45,9 +45,9 @@ namespace esplit_API.Controllers
 
 		[HttpPost]
 		[Route("CreateConnection")]
-		public IActionResult CreateConnection(int userID, string toUserName)
+		public IActionResult CreateContact(int userID, string toUserName)
 		{
-			int contactID = connectionService.CreateConnection(userID, toUserName);
+			int contactID = contactService.CreateContact(userID, toUserName);
 			if (contactID > 0)
 			{
 				return Ok(new { ContactID = contactID });
@@ -60,9 +60,9 @@ namespace esplit_API.Controllers
 
 		[HttpPost]
 		[Route("InteractConnectionRequest")]
-		public IActionResult InteractConnectionRequest(int contactID, string connectionStatus)
+		public IActionResult InteractContactRequest(int contactID, string connectionStatus)
 		{
-			if(connectionService.InteractConnection(contactID, connectionStatus))
+			if(contactService.InteractContact(contactID, connectionStatus))
 			{
 				return Ok($"Connection {connectionStatus} successful.");
 			}
@@ -75,9 +75,9 @@ namespace esplit_API.Controllers
 
 		[HttpGet]
 		[Route("GetConnectionRequests")]
-		public IActionResult GetConnectionRequests(int userID, string connectionStatus = "PENDING")
+		public IActionResult GetContactRequests(int userID, string actionType,string connectionStatus = "PENDING")
 		{
-			List<ConnectionDto> connections = connectionService.GetConnections(userID, connectionStatus);
+			List<ContactDto> connections = contactService.GetContacts(userID, connectionStatus, actionType);
 			if (connections != null && connections.Count > 0)
 			{
 				return Ok(connections);

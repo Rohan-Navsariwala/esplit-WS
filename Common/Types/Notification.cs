@@ -19,37 +19,19 @@ namespace Common.Types
 
 	public enum NotificationType
 	{
-		[Description("TEST")]
-		Test,
+		TEST,
+		SYSTEM,
 
-		[Description("SYSTEM")]
-		System,
+		SPLIT_CREATED,
+		SPLIT_APPROVAL,
+		SPLIT_REJECTED,
+		SPLIT_DELETE,
+		SPLIT_PAYMENT,
 
-		[Description("SPLIT_CREATED")]
-		Split_Created,
-
-		[Description("SPLIT_APPROVAL")]
-		Split_Approval,
-
-		[Description("SPLIT_REJECTED")]
-		Split_Rejected,
-
-		[Description("SPLIT_PAYMENT")]
-		Split_Payment,
-
-		[Description("SPLIT_DELETE")]
-		Split_Delete,
-
-		[Description("CONNECTION_SENT")]
-		Connection_Sent,
-
-		[Description("CONNECTION_ACCEPTED")]
-		Connection_Accepted,
-
-		[Description("CONNECTION_DELETED")]
-		Connection_Deleted,
-
-		[Description("CONNECTION_REQUESTED")]
-		Connection_Requested
+		CONNECTION_SENT,
+		CONNECTION_ACCEPTED,
+		CONNECTION_REJECTED,
+		CONNECTION_DELETED,
+		CONNECTION_REQUESTED
 	}
 }

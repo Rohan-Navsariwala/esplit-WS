@@ -15,9 +15,9 @@ namespace DataAccess.Repositories
 				{ "NotifyFor", notification.NotifyFor },
 				{ "ActionPerformedBy", notification.ActionPerformedBy },
 				{ "NotificationText", notification.NotificationText },
-				{ "NotificationType", notification.NotificationType }
+				{ "NotificationType", notification.NotificationType.ToString() }
 			};
-			return (int)DataAccess.dbMethods.DbUpdate("CreateNotification", _notifications, true);
+			return Convert.ToInt32(DataAccess.dbMethods.DbUpdate("CreateNotification", _notifications, true));
 		}
 
 		public bool DeleteNotification(int notificationID, int userID) 

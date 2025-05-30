@@ -1,9 +1,9 @@
 CREATE PROCEDURE GetSplits
     @UserID INT,
-    @SplitStatus VARCHAR(30)
+    @SplitStatus int
 AS
 BEGIN
-    IF @SplitStatus = 'OWNED'
+    IF @SplitStatus = '10' --denotes own
     BEGIN
         SELECT *
         FROM dbo.Splits
@@ -17,8 +17,8 @@ BEGIN
         INNER JOIN Splits s ON c.SplitID = s.SplitID
         WHERE c.SplitParticipantID = @UserID
           AND (
-                (@SplitStatus = 'ALL' AND c.SplitStatus IN ('PENDING_APPROVAL', 'APPROVED_UNPAID')) OR
-                (@SplitStatus = 'APPROVED_PAID' AND c.SplitStatus = @SplitStatus)
-              );
+                (@SplitStatus = '9' AND c.SplitStatus IN ('0', '1')) OR
+                (@SplitStatus = '2' AND c.SplitStatus = @SplitStatus)
+              ); -- 9 denotes all
     END
 END

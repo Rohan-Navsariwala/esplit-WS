@@ -2,7 +2,7 @@ ALTER procedure CreateNotification
 	@NotifyFor int,
 	@ActionPerformedBy varchar(30),
 	@NotificationText varchar(100),
-	@NotificationType varchar(30)
+	@NotificationType int
 as
 begin
 	insert into Notifications (NotifyFor, ActionPerformedBy,NotificationText,NotificationType)
