@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Common.Types;
 using Biz.Services;
+using System.Data;
 
 namespace esplit_API.Controllers
 {
@@ -15,24 +16,76 @@ namespace esplit_API.Controllers
 			connectionService = new ConnectionService();
 		}
 
-		public List<Contact> GetContactsByUserID()
+		[HttpGet]
+		public IActionResult GetContacts(int userID, string connectionStatus = "APPROVED")
 		{
-			return new List<Contact>();
+			List<ConnectionDto> connections = connectionService.GetConnections(userID, connectionStatus);
+			if(connections != null && connections.Count > 0)
+			{
+				return Ok(connections);
+			}
+			else
+			{
+				return NotFound("No connections found for the given user.");
+			}
 		}
 
-		public IActionResult DeleteContact()
+		[HttpDelete("{contactID}")]
+		public IActionResult DeleteContact(int contactID)
 		{
-			return null;
+			if (connectionService.DeleteConnection(contactID))
+			{
+				return Ok("Connection deleted successfully.");
+			}
+			else
+			{
+				return BadRequest("Failed to delete connection.");
+			}
 		}
 
-		public IActionResult InteractConnectionRequest()
+		[HttpPost]
+		[Route("CreateConnection")]
+		public IActionResult CreateConnection(int userID, string toUserName)
 		{
-			return null;
+			int contactID = connectionService.CreateConnection(userID, toUserName);
+			if (contactID > 0)
+			{
+				return Ok(new { ContactID = contactID });
+			}
+			else
+			{
+				return BadRequest("Failed to create connection.");
+			}
 		}
 
-		public IActionResult GetConnectionRequests()
+		[HttpPost]
+		[Route("InteractConnectionRequest")]
+		public IActionResult InteractConnectionRequest(int contactID, string connectionStatus)
 		{
-			return null;
+			if(connectionService.InteractConnection(contactID, connectionStatus))
+			{
+				return Ok($"Connection {connectionStatus} successful.");
+			}
+			else
+			{
+				return BadRequest($"Failed to {connectionStatus} with connection.");
+			}
+
+		}
+
+		[HttpGet]
+		[Route("GetConnectionRequests")]
+		public IActionResult GetConnectionRequests(int userID, string connectionStatus = "PENDING")
+		{
+			List<ConnectionDto> connections = connectionService.GetConnections(userID, connectionStatus);
+			if (connections != null && connections.Count > 0)
+			{
+				return Ok(connections);
+			}
+			else
+			{
+				return NotFound("No connection requests found for the given user.");
+			}
 		}
 	}
 }

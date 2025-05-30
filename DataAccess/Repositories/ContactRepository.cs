@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Data;
 using Microsoft.Data.SqlClient;
 using Common.Types;
+using System.Data.Common;
 
 namespace DataAccess.Repositories
 {
@@ -18,7 +19,7 @@ namespace DataAccess.Repositories
 				{ "UserID", userID },
 				{ "toUserName", toUserName }
 			};
-			return (int)DataAccess.dbMethods.DbUpdate("CreateConnection", parameters, true);
+			return Convert.ToInt32(DataAccess.dbMethods.DbUpdate("CreateConnection", parameters, true));
 		}
 
 		public bool DeleteConnection(int contactID) 
@@ -27,7 +28,7 @@ namespace DataAccess.Repositories
 			{
 				{ "ContactID", contactID }
 			};
-			return (bool)DataAccess.dbMethods.DbUpdate("DeleteConnection", parameters);
+			return Convert.ToBoolean(DataAccess.dbMethods.DbUpdate("DeleteContact", parameters));
 		}
 
 		public List<ConnectionDto> GetConnections(int userID, string connectionStatus)
@@ -50,21 +51,23 @@ namespace DataAccess.Repositories
 					ContactData = new Contact {
 						ContactID = (int)reader["ContactID"],
 						ConnectionInit = Convert.ToDateTime(reader["ConnectionInit"]),
-						ApprovedOn = Convert.ToDateTime(reader["ApprovedOn"]),
+						ApprovedOn = reader["ApprovedOn"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["ApprovedOn"]),
 						ConnectionStatus = (ConnectionStatus)Enum.Parse(typeof(ConnectionStatus), reader["ConnectionStatus"].ToString()),
+						UserID1 = 0,
+						UserID2 = 0
 					}
 				};
 			});
 		}
 
-		public bool InteractConnection(int userID, string connectionStatus)
+		public bool InteractConnection(int contactID, string connectionStatus)
 		{
 			Dictionary<string, object> parameters = new Dictionary<string, object>
 			{
-				{ "UserID", userID },
+				{ "ContactID", contactID },
 				{ "ConnectionStatus", connectionStatus }
 			};
-			return (bool)DataAccess.dbMethods.DbUpdate("InteractConnection", parameters);
+			return Convert.ToBoolean(DataAccess.dbMethods.DbUpdate("InteractConnection", parameters));
 		}
 	}
 }

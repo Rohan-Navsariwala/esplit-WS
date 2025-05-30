@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.Types
+namespace Biz.Services
 {
-	public class ConnectionDto
+	public class SplitsService
 	{
-		public User UserData { get; set; }
-		public Contact ContactData { get; set; }
+		public SplitsService() { }
+
 
 	}
 }

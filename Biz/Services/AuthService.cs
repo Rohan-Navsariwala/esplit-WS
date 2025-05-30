@@ -10,12 +10,10 @@ namespace Biz.Services
 {
 	public class AuthService
 	{
-		private readonly Encryption _encryption;
 		private readonly UserRepository _userRepository;
 
 		public AuthService()
 		{
-			_encryption = new Encryption();
 			_userRepository = new UserRepository();
 		}
 
@@ -53,7 +51,7 @@ namespace Biz.Services
 
 		private bool VerifyPassword(string enteredPassword, string storedHash)
 		{
-			return _encryption.ComputeSHA256Hash(enteredPassword) == storedHash;
+			return Encryption.ComputeSHA256Hash(enteredPassword) == storedHash;
 		}
 	}
 }

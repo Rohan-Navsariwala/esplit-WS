@@ -21,7 +21,7 @@ namespace Common.Types
 	public enum ConnectionStatus
 	{
 		[Description("PENDING")]
-		Pending,
+		PENDING,
 
 		[Description("APPROVED")]
 		Approved,

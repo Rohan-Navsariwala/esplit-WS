@@ -9,20 +9,18 @@ namespace Biz.Services
 {
 	public class RegistrationService
 	{
-		Encryption _encryption;
 		UserRepository _userRepository;
 
 		public RegistrationService()
 		{
 			_userRepository = new UserRepository();
-			_encryption = new Encryption();
 		}
 
 		public bool RegisterUser(User user)
 		{
 			if (!isExistingUser(user.UserName))
 			{
-				user.PasswordHash = _encryption.ComputeSHA256Hash(user.PasswordHash);
+				user.PasswordHash = Encryption.ComputeSHA256Hash(user.PasswordHash);
 				_userRepository.CreateUser(user);
 				return true;
 			}

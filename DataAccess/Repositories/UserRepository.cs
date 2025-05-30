@@ -13,9 +13,9 @@ namespace DataAccess.Repositories
 		{
 			Dictionary<string, object> UserInfo = new Dictionary<string, object>()
 			{
-				{"UserID", user.UserID },
-				{ "IsActive", user.IsActive },
-				{ "CreatedAt", user.CreatedAt }
+				{"UserName", user.UserName },
+				{ "FullName", user.FullName },
+				{ "PasswordHash", user.PasswordHash }
 			};
 			return (bool)DataAccess.dbMethods.DbUpdate("CreateUser", UserInfo);
 		}

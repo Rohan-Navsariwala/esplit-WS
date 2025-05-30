@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Common.Utils
 {
-	public class Encryption
+	public static class Encryption
 	{
-		public string ComputeSHA256Hash(string input)
+		public static string ComputeSHA256Hash(string input)
 		{
 			using (SHA256 sha256 = SHA256.Create())
 			{
