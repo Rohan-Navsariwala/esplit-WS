@@ -1,12 +1,19 @@
-alter PROCEDURE GetContacts
+USE [esplit]
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+create PROCEDURE GetContacts
     @UserID INT,
-	@ContactStatus varchar(10)
+	@ContactStatus int
 AS
 BEGIN
     SELECT	c.ContactID,
 			c.ContactStatus,
-			c.ConnectionInit,
-			c.ApprovedOn,
+			c.ContactInit,
+			c.StatusUpdateOn,
 			c.UserID1,
 			c.UserID2,
 			u.UserID,

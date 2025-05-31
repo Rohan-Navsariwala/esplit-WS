@@ -50,9 +50,9 @@ namespace DataAccess.Repositories
 					},
 					ContactData = new Contact {
 						ContactID = (int)reader["ContactID"],
-						ConnectionInit = Convert.ToDateTime(reader["ConnectionInit"]),
-						ApprovedOn = reader["ApprovedOn"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["ApprovedOn"]),
-						ConnectionStatus = (ConnectionStatus)Enum.Parse(typeof(ConnectionStatus), reader["ConnectionStatus"].ToString()),
+						ContactInit = Convert.ToDateTime(reader["ConnectionInit"]),
+						StatucUpdateOn = reader["ApprovedOn"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["ApprovedOn"]),
+						ContactStatus = (ConnectionStatus)Enum.Parse(typeof(ConnectionStatus), reader["ConnectionStatus"].ToString()),
 						UserID1 = (int)reader["UserID1"],
 						UserID2 = (int)reader["UserID2"]
 					}

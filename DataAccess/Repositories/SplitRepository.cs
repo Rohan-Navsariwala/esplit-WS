@@ -58,7 +58,7 @@ namespace DataAccess.Repositories
 						SplitParticipantID = (int)reader["SplitParticipantID"],
 						OweAmount = (decimal)reader["OweAmount"],
 						SplitStatus = (SplitStatus)Enum.Parse(typeof(SplitStatus), reader["SplitStatus"].ToString()),
-						ApprovedOn = Convert.ToDateTime(reader["ApprovedOn"]),
+						StatusUpdateOn = Convert.ToDateTime(reader["ApprovedOn"]),
 						PaidOn = Convert.ToDateTime(reader["PaidOn"]),
 					},
 					UserData = new User {

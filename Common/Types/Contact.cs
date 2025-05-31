@@ -12,17 +12,17 @@ namespace Common.Types
 		public int ContactID { get; set; }
 		public int UserID1 { get; set; }
 		public int UserID2 { get; set; }
-		public ConnectionStatus ConnectionStatus { get; set; }
-		public DateTime ConnectionInit { get; set; }
-		public DateTime ApprovedOn { get; set; }
+		public ConnectionStatus ContactStatus { get; set; }
+		public DateTime ContactInit { get; set; }
+		public DateTime StatucUpdateOn { get; set; }
 
 	}
 
 	public enum ConnectionStatus
 	{
-		PENDING,
-		APPROVED,
-		REJECTED,
-		DELETED
+		PENDING = 1,
+		APPROVED = 2,
+		REJECTED = 3,
+		DELETED = 4
 	}
 }

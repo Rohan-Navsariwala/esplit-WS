@@ -1,0 +1,36 @@
+## USER
+create user -> user - bool [already exist check]
+get user -> id | username - user
+delete user -> id - bool [session drop also]
+authn user -> id, pass - user
+authz user operations - only endpoint and biz logic - no sp needed
+logout user -> session drop
+
+
+## CONTACT
+get one contact -> cntid - contact
+contact create -> id, tousername - contact (sp need to return either contact or scopeid) [can get id from session only]
+contact interact -> cntid, setstatus, - bool 
+contact delete -> cntid - bool 
+[auth check for interact and delete method - take user from session - sp needed to check if that connection is of this user] - userid1 == delete , userid2 == interact
+get all contacts -> id - list<contacts>   [id can be taken from session only]
+
+
+## NOTIFICATION (service only, no api endpoints in production) - will create seperate in cases of both sides notified
+create notification -> foruserid, byusername, other notification data
+get notifications -> id - [from session]
+delete notification -> nid - bool [auth check if foruserid is myid]
+
+[scopeidfromusername, scopeusernamefromid]
+
+
+## SPLITS
+get all splits -> id, type [auth check for id, then append all split to session/cache - ORP+SplitID]
+get split participants -> splitid - list<parti> [auth check from session spliits]
+create split -> split data, parti list - split (scope single split by id) (auth check if participant is a contact)
+add split participants -> parti list , splitid [parti is contact] (we can already get list of contact once {cache or session}) 
+delete split participant -> uid, sid - bool {auth check for OSplit and useriscontact}
+paydue -> id, sid {auth check}[id from session]
+togglesplitreq -> sid, option - bool -- [option will decide what auth to apply, approve/reject or close/delete split]
+
+

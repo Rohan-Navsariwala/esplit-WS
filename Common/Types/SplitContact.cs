@@ -13,14 +13,16 @@ namespace Common.Types
 		public int SplitParticipantID { get; set; }
 		public decimal OweAmount { get; set; }
 		public SplitStatus SplitStatus { get; set; }
-		public DateTime ApprovedOn { get; set; }
-		public DateTime PaidOn { get; set; }
+		public DateTime StatusUpdateOn { get; set; }
 	}
 
 	public enum SplitStatus
 	{
-		PENDING_APPROVAL,
-		APPROVED_UNPAID,
-		PAID
+		PENDING_APPROVAL = 1,
+		REJECTED = 2,
+		APPROVED_UNPAID = 3,
+		PAID = 4,
+		OWNED = 11,
+		ALL = 12
 	}
 }
