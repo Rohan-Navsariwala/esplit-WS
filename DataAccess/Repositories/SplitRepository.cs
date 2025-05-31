@@ -28,8 +28,7 @@ namespace DataAccess.Repositories
 			{
 				{ "UserID", split.CreatedBy },
 				{ "SplitAmount", split.SplitAmount },
-				{ "SplitDescription", split.SplitDescription },
-				{ "Deadline", split.Deadline },
+				{ "SplitDescription", split.SplitDescription }
 			};
 			return (int)DataAccess.dbMethods.DbUpdate("CreateSplit", parameters, true);
 		}
@@ -57,22 +56,21 @@ namespace DataAccess.Repositories
 						SplitID = (int)reader["SplitID"],
 						SplitParticipantID = (int)reader["SplitParticipantID"],
 						OweAmount = (decimal)reader["OweAmount"],
-						SplitStatus = (SplitStatus)Enum.Parse(typeof(SplitStatus), reader["SplitStatus"].ToString()),
-						StatusUpdateOn = Convert.ToDateTime(reader["ApprovedOn"]),
-						PaidOn = Convert.ToDateTime(reader["PaidOn"]),
+						SplitStatus = (SplitStatus)reader["SplitStatus"],
+						StatusUpdateOn = Convert.ToDateTime(reader["StatusUpdateOn"]),
 					},
 					UserData = new User {
 						UserID = (int)reader["UserID"],
 						FullName = reader["FullName"].ToString(),
 						UserName = reader["UserName"].ToString(),
-						IsActive = Convert.ToBoolean(reader["IsActive"]),
-						CreatedAt = (DateTime)reader["CreatedAt"]
+						CreatedAt = (DateTime)reader["CreatedAt"],
+						IsActive = Convert.ToBoolean(reader["IsActive"])
 					}
 				};
 			});
 		}
 
-		public List<SplitInfo> GetNotifications(int userID, string splitStatus)
+		public List<SplitInfo> GetSplits(int userID, SplitStatus splitStatus)
 		{
 			Dictionary<string, object> parameters = new Dictionary<string, object>()
 			{
@@ -88,7 +86,6 @@ namespace DataAccess.Repositories
 					SplitDescription = reader["SplitDescription"].ToString(),
 					CreatedOn = Convert.ToDateTime(reader["CreatedOn"]),
 					UpdatedOn = Convert.ToDateTime(reader["UpdatedOn"]),
-					Deadline = Convert.ToDateTime(reader["Deadline"]),
 					IsClosed = Convert.ToBoolean(reader["IsClosed"]),
 				};
 			});
@@ -104,15 +101,26 @@ namespace DataAccess.Repositories
 			return (bool)DataAccess.dbMethods.DbUpdate("PayDue", parameters);
 		}
 
-		public bool ToggleSplitRequest(int userID, int splitID, int change)
+		public bool ToggleSplit(int userID, int splitID, SplitStatus splitStatus)
 		{
 			Dictionary<string, object> parameters = new Dictionary<string, object>()
 			{
 				{ "UserID", userID },
 				{ "SplitID", splitID },
-				{ "Change", change }
+				{ "SplitStatus", splitStatus }
 			};
-			return (bool)DataAccess.dbMethods.DbUpdate("ToggleSplitRequest", parameters);
+			return (bool)DataAccess.dbMethods.DbUpdate("ToggleSplit", parameters);
+		}
+
+		public bool MarkClosed(int userID, int splitID)
+		{
+			Dictionary<string, object> parameters = new Dictionary<string, object>()
+			{
+				{ "UserID", userID },
+				{ "SplitID", splitID },
+			};
+
+			return (bool)DataAccess.dbMethods.DbUpdate("MarkClosed", parameters);
 		}
 	}
 }

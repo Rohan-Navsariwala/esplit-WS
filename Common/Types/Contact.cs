@@ -12,13 +12,13 @@ namespace Common.Types
 		public int ContactID { get; set; }
 		public int UserID1 { get; set; }
 		public int UserID2 { get; set; }
-		public ConnectionStatus ContactStatus { get; set; }
+		public ContactStatus ContactStatus { get; set; }
 		public DateTime ContactInit { get; set; }
-		public DateTime StatucUpdateOn { get; set; }
+		public DateTime StatusUpdateOn { get; set; }
 
 	}
 
-	public enum ConnectionStatus
+	public enum ContactStatus
 	{
 		PENDING = 1,
 		APPROVED = 2,
