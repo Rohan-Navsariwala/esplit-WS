@@ -1,54 +1,145 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Common.Types;
+using Biz.Services;
 
 namespace esplit_API.Controllers
 {
-	//[Route("api/[controller]")]
-	//[ApiController]
+	[Route("api/[controller]")]
+	[ApiController]
 	public class SplitsController : ControllerBase
 	{
-		public SplitsController() { }
-
-		public List<Split> GetUserCreatedSplits()
-		{
-			return new List<Split>();
+		SplitsService splitService;
+		public SplitsController() 
+		{ 
+			splitService = new SplitsService();
 		}
 
-		public List<Split> GetPendingSplitRequests()
+		[HttpGet]
+		[Route("UserCreated")]
+		public IActionResult GetUserCreatedSplits(int userID)
 		{
-			return new List<Split>();
+			List<SplitInfo> splits = splitService.GetSplits(userID, SplitStatus.OWNED);
+			if (splits != null && splits.Count > 0)
+			{
+				return Ok(splits);
+			}
+			else
+			{
+				return BadRequest();
+			}
 		}
 
-		public List<Split> GetUserDueSplits()
+		//public List<Split> GetPendingSplitRequests()
+		//{
+		//	return new List<Split>();
+		//}
+
+		//public List<Split> GetUserDueSplits()
+		//{
+		//	return new List<Split>();
+		//}
+
+		[HttpGet]
+		[Route("UserNonCreated")]
+		public IActionResult GetNonUserCreatedSplits(int userID)
 		{
-			return new List<Split>();
+			List<SplitInfo> splits = splitService.GetSplits(userID, SplitStatus.ALL);
+			if (splits != null && splits.Count > 0)
+			{
+				return Ok(splits);
+			}
+			else
+			{
+				return BadRequest();
+			}
 		}
 
-		public List<Contact> GetSplitParticipants()
+		[HttpGet]
+		[Route("GetSplitParticipants")]
+		public IActionResult GetSplitParticipants(int splitID)
 		{
-			return new List<Contact>();
+			List<ParticipantDto> splitContacts = splitService.GetParticipants(splitID);
+			if(splitContacts != null  && splitContacts.Count > 0)
+			{
+				return Ok(splitContacts);
+			}
+			else
+			{
+				return BadRequest();
+			}
+
 		}
 
-		public IActionResult CreateSplit()
+		[HttpGet]
+		[Route("AddSplitParticipant")]
+		public IActionResult AddSplitParticipant(SplitContact contact)
 		{
-			return null;
+			if(splitService.AddSplitParticipant(contact))
+			{
+				return Ok();
+			}
+			else
+			{
+				return BadRequest();
+			}
 		}
 
-		public IActionResult EditSplit()
+		[HttpPost]
+		public IActionResult CreateSplit(Split split)
 		{
-			//can edit split whole or just the interacted status
-			return null;
-		}
-		public IActionResult DeleteSplit()
-		{
-			return null;
+			if (splitService.CreateSplit(split))
+			{
+				return Ok();
+			}
+			else
+			{
+				return BadRequest();
+			}
 		}
 
-
-		public IActionResult PayDues()
+		[HttpPost]
+		[Route("EditSplit")]
+		public IActionResult EditSplit(int splitID, int userID,[FromBody] string splitStatus)
 		{
-			return null;
+			//can edit split whole or just the interacted status, toggle split request from here
+			if(splitService.ToggleSplit(userID, splitID, splitStatus))
+			{
+				return Ok();
+			}
+			else
+			{
+				return BadRequest();
+			}
+		}
+
+		[HttpDelete]
+		public IActionResult CloseSplit(int userID, int splitID)
+		{
+			//not delete, but set split status to close
+			if(splitService.MarkClosed(userID, splitID))
+			{
+				return Ok();
+			}
+			else
+			{
+				return BadRequest();
+			}
+		}
+
+		[HttpPost]
+		[Route("PayDue")]
+		public IActionResult PayDues(int splitID, int userID)
+		{
+			
+			if(splitService.PayDue(splitID, userID))
+			{
+				return Ok();
+			}
+			else
+			{
+				return BadRequest();
+			}
 		}
 	}
 }

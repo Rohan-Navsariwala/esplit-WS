@@ -83,14 +83,14 @@ namespace DataAccess.Repositories
 		/// <param name="contactID"></param>
 		/// <param name="contactStatus"></param>
 		/// <returns></returns>
-		public bool InteractContact(int contactID, ContactStatus contactStatus)
+		public int InteractContact(int contactID, ContactStatus contactStatus)
 		{
 			Dictionary<string, object> parameters = new Dictionary<string, object>
 			{
 				{ "ContactID", contactID },
 				{ "ContactStatus", contactStatus }
 			};
-			return Convert.ToBoolean(DataAccess.dbMethods.DbUpdate("InteractContact", parameters));
+			return (int)DataAccess.dbMethods.DbUpdate("InteractContact", parameters, true);
 		}
 
 		/// <summary>

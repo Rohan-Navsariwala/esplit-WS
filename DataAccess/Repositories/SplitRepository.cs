@@ -11,13 +11,13 @@ namespace DataAccess.Repositories
 {
 	public class SplitRepository
 	{
-		public bool AddSplitParticipant(List<SplitContact> splitContacts)
+		public bool AddSplitParticipant(SplitContact splitContact)
 		{
 			Dictionary<string, object> parameters = new Dictionary<string, object>()
 			{
-				{ "SplitID", splitContacts.First().SplitID },
-				{ "SplitParticipantID", splitContacts.First().SplitParticipantID },
-				{ "OweAmount", splitContacts.First().OweAmount }
+				{ "SplitID", splitContact.SplitID },
+				{ "SplitParticipantID", splitContact.SplitParticipantID },
+				{ "OweAmount", splitContact.OweAmount }
 			};
 			return (bool)DataAccess.dbMethods.DbUpdate("AddSplitParticipant", parameters);
 		}
