@@ -38,7 +38,7 @@ namespace Biz.Services
 				}
 			}
 			Notification notification = new Notification() {
-				NotifyFor = 0, //myself
+				NotifyFor = 1, //myself
 				ActionPerformedBy = "SYSTEM",
 				NotificationText = NotificationText.SplitCreated,
 				NotificationType = NotificationType.SPLIT_CREATED
@@ -74,7 +74,7 @@ namespace Biz.Services
 			if(splitRepository.DeleteSplitParticipant(userID, splitID))
 			{
 				Notification notification = new Notification() {
-					NotifyFor = 0, //myself
+					NotifyFor = 1, //myself
 					ActionPerformedBy = "SYSTEM",
 					NotificationText = NotificationText.ConnectionDeleted,
 					NotificationType = NotificationType.SPLIT_PARTICIPANT_DELETED
@@ -96,7 +96,7 @@ namespace Biz.Services
 			if(splitRepository.PayDue(userID, splitID))
 			{
 				Notification notification = new Notification() {
-					NotifyFor = 0, //split owner
+					NotifyFor = 1, //split owner
 					ActionPerformedBy = "me user",
 					NotificationText = NotificationText.UserHasPaid,
 					NotificationType = NotificationType.SPLIT_PAYMENT
@@ -126,7 +126,7 @@ namespace Biz.Services
 			if(splitRepository.MarkClosed(userID, splitID))
 			{
 				Notification notification = new Notification() {
-					NotifyFor = 0,
+					NotifyFor = 1,
 					ActionPerformedBy = "SYSTEM",
 					NotificationText = NotificationText.CloseSplit,
 					NotificationType = NotificationType.SPLIT_PARTICIPANT_ADDED

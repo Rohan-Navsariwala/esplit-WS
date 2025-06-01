@@ -67,7 +67,7 @@ namespace DataAccess.Repositories
 					},
 					ContactData = new Contact {
 						ContactID = (int)reader["ContactID"],
-						ContactInit = Convert.ToDateTime(reader["ConInit"]),
+						ContactInit = Convert.ToDateTime(reader["ContactInit"]),
 						StatusUpdateOn = reader["StatusUpdateOn"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["StatusUpdateOn"]),
 						ContactStatus = (ContactStatus)reader["ContactStatus"],
 						UserID1 = (int)reader["UserID1"],

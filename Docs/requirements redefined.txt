@@ -1,3 +1,5 @@
+@@this sprint
+
 ## USER
 create user -> user - bool [already exist check]
 get user -> id | username - user
@@ -34,3 +36,16 @@ paydue -> id, sid {auth check}[id from session]
 togglesplitreq -> sid, option - bool -- [option will decide what auth to apply, approve/reject or close/delete split]
 
 
+
+
+@@next sprint
+create user can have validation check for not allowed uernames
+
+
+
+
+notes:
+user module working perfectly
+notification module working perfectly - although renovations have to be made yet (just for who to notify, since auth is remaining)
+contacts module iS now working properly
+splits module i have not tested yet

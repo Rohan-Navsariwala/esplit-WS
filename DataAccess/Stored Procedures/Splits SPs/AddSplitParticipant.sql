@@ -7,10 +7,10 @@ GO
 
 create procedure AddSplitParticipant
 	@SplitID int,
-	@UserID int,
+	@SplitParticipantID int,
 	@OweAmount decimal(10,2)
 as
 begin
 	insert into SplitContacts (SplitID, SplitParticipantID, OweAmount, SplitStatus)
-	values (@SplitID, @UserID,@OweAmount, '1');
+	values (@SplitID, @SplitParticipantID,@OweAmount, '1');
 end

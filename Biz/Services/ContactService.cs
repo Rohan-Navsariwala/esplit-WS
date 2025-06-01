@@ -68,7 +68,7 @@ namespace Biz.Services
 			if (contactRepo.DeleteContact(contactID)){
 				Notification notification = new Notification()
 				{
-					NotifyFor = 0,
+					NotifyFor = 1,
 					ActionPerformedBy = "SYSTEM",
 					NotificationText = NotificationText.ConnectionDeleted,
 					NotificationType = NotificationType.CONNECTION_DELETED
@@ -89,7 +89,7 @@ namespace Biz.Services
 			{
 				Notification notification = new Notification()
 				{
-					NotifyFor = 0,
+					NotifyFor = 1,
 					ActionPerformedBy = "",
 					NotificationText = contactStatus == ContactStatus.APPROVED
 						? NotificationText.ConnectionAccepted : NotificationText.ConnectionRejected,

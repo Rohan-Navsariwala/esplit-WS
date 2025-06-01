@@ -26,11 +26,11 @@ namespace DataAccess.Repositories
 		{
 			Dictionary<string, object> parameters = new Dictionary<string, object>()
 			{
-				{ "UserID", split.CreatedBy },
+				{ "CreatedBy", split.CreatedBy },
 				{ "SplitAmount", split.SplitAmount },
 				{ "SplitDescription", split.SplitDescription }
 			};
-			return (int)DataAccess.dbMethods.DbUpdate("CreateSplit", parameters, true);
+			return Convert.ToInt32(DataAccess.dbMethods.DbUpdate("CreateSplit", parameters, true));
 		}
 
 		public bool DeleteSplitParticipant(int userID, int splitID)
@@ -57,7 +57,7 @@ namespace DataAccess.Repositories
 						SplitParticipantID = (int)reader["SplitParticipantID"],
 						OweAmount = (decimal)reader["OweAmount"],
 						SplitStatus = (SplitStatus)reader["SplitStatus"],
-						StatusUpdateOn = Convert.ToDateTime(reader["StatusUpdateOn"]),
+						StatusUpdateOn = Convert.ToDateTime(reader["StatusUpdateOn"]), //this will give datetime null
 					},
 					UserData = new User {
 						UserID = (int)reader["UserID"],
@@ -85,7 +85,7 @@ namespace DataAccess.Repositories
 					SplitAmount = (decimal)reader["SplitAmount"],
 					SplitDescription = reader["SplitDescription"].ToString(),
 					CreatedOn = Convert.ToDateTime(reader["CreatedOn"]),
-					UpdatedOn = Convert.ToDateTime(reader["UpdatedOn"]),
+					UpdatedOn = Convert.ToDateTime(reader["UpdatedOn"]), //this will give datetime null
 					IsClosed = Convert.ToBoolean(reader["IsClosed"]),
 				};
 			});
