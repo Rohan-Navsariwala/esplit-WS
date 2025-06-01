@@ -1,19 +1,15 @@
 ﻿using Common.Types;
 using Common.Utils;
 using DataAccess.Repositories;
-using Newtonsoft.Json;
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace Biz.Services
 {
-	public class AuthService
+	public class UserService
 	{
-		private readonly UserRepository _userRepository;
+		UserRepository _userRepository;
 
-		public AuthService()
-		{
+		public UserService()
+		{	
 			_userRepository = new UserRepository();
 		}
 
@@ -49,9 +45,43 @@ namespace Biz.Services
 		//	}
 		//}
 
+		public bool RegisterUser(User user)
+		{
+			if (!isExistingUser(user.UserName))
+			{
+				user.PasswordHash = Encryption.ComputeSHA256Hash(user.PasswordHash);
+				_userRepository.CreateUser(user);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		public bool LogOut()
+		{
+			return true;
+		}
+
 		private bool VerifyPassword(string enteredPassword, string storedHash)
 		{
 			return Encryption.ComputeSHA256Hash(enteredPassword) == storedHash;
+		}
+
+		public bool isExistingUser(string userName)
+		{
+			return _userRepository.GetUserByUserName(userName) == null ? false : true;
+		}
+
+		public string GetUserName(int userID)
+		{
+			return _userRepository.GetUserNameByID(userID);
+		}
+
+		public int GetUserID(string userName)
+		{
+			return _userRepository.GetUserIDByUserName(userName);
 		}
 	}
 }

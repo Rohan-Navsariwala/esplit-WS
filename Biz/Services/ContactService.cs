@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common;
+﻿using Common;
 using Common.Types;
 using DataAccess.Repositories;
 
@@ -13,54 +8,53 @@ namespace Biz.Services
 	{
 		ContactRepository contactRepo;
 		NotificationService notifyService;
+		UserService userService;
 		public ContactService() 
 		{
 			contactRepo = new ContactRepository();
 			notifyService = new NotificationService();
 		}
 
-		public List<ContactDto> GetContacts(int userID, string connectionStatus, string actionType = "")
+		public List<ContactDto> GetContacts(int userID, ContactStatus contactStatus, string actionType = "")
 		{
 			//later we have to add authorization checks before returing any connections
-			List<ContactDto> connections = contactRepo.GetContacts(userID, connectionStatus);
-			if(actionType == "Sent" && connectionStatus == "PENDING")
+			List<ContactDto> contacts = contactRepo.GetContacts(userID, contactStatus);
+			if(actionType == "Sent" && contactStatus == ContactStatus.PENDING)
 			{
-				return connections.Where(c => c.ContactData.UserID1 == userID).ToList();
+				return contacts.Where(c => c.ContactData.UserID1 == userID).ToList();
 			}
-			else if(actionType == "Received" && connectionStatus == "PENDING")
+			else if(actionType == "Received" && contactStatus == ContactStatus.PENDING)
 			{
-				return connections.Where(c => c.ContactData.UserID2 == userID).ToList();
+				return contacts.Where(c => c.ContactData.UserID2 == userID).ToList();
 			}
 			else
 			{
-				return connections;
+				return contacts;
 			}
-
-
 		}
 
 		public int CreateContact(int userID, string toUserName)
 		{
 			//auth checks
-			int ConnectionID = contactRepo.CreateContact(userID, toUserName);
+			int ContactID = contactRepo.CreateContact(userID, toUserName);
 
-			if (ConnectionID > 0)
+			if (ContactID > 0)
 			{
+				userService = new UserService();
 				Notification notification = new Notification()
 				{
 					NotifyFor = userID,
-					ActionPerformedBy = toUserName,
+					ActionPerformedBy = "",
 					NotificationText = NotificationText.ConnectionCreated,
-					NotificationType = NotificationType.Connection_Sent
+					NotificationType = NotificationType.CONNECTION_SENT
 				};
 				notifyService.CreateNotification(notification);
 
-				notification.ActionPerformedBy = "username from session";
-				notification.NotifyFor = 1; //here receivers uid goes
+				notification.NotifyFor = userService.GetUserID(toUserName);
 				notification.NotificationText = NotificationText.ConnectionRequested;
 				notifyService.CreateNotification(notification);
 				
-				return ConnectionID;
+				return ContactID;
 			}
 			else
 			{
@@ -74,10 +68,10 @@ namespace Biz.Services
 			if (contactRepo.DeleteContact(contactID)){
 				Notification notification = new Notification()
 				{
-					NotifyFor = 1,
-					ActionPerformedBy = "username from session",
+					NotifyFor = 0,
+					ActionPerformedBy = "SYSTEM",
 					NotificationText = NotificationText.ConnectionDeleted,
-					NotificationType = NotificationType.Connection_Deleted
+					NotificationType = NotificationType.CONNECTION_DELETED
 				};
 				notifyService.CreateNotification(notification);
 				return true;
@@ -87,23 +81,26 @@ namespace Biz.Services
 				return false;
 			}
 		}
-		public bool InteractContact(int contactID, string connectionStatus)
+		public bool InteractContact(int contactID, ContactStatus contactStatus)
 		{
 			//auth checks
-			if(contactRepo.InteractContact(contactID, connectionStatus))
+			int affectedUser = contactRepo.InteractContact(contactID, contactStatus);
+			if (affectedUser > 0)
 			{
 				Notification notification = new Notification()
 				{
-					NotifyFor = 1,
-					ActionPerformedBy = "username from session",
-					NotificationText = connectionStatus == "APPROVED" 
+					NotifyFor = 0,
+					ActionPerformedBy = "",
+					NotificationText = contactStatus == ContactStatus.APPROVED
 						? NotificationText.ConnectionAccepted : NotificationText.ConnectionRejected,
-					NotificationType = connectionStatus == "APPROVED" 
-						? NotificationType.Connection_Accepted : NotificationType.Connection_Rejected
-
+					NotificationType = contactStatus == ContactStatus.APPROVED
+						? NotificationType.CONNECTION_ACCEPTED : NotificationType.CONNECTION_REJECTED
 				};
-				var a = test.Four;
 				notifyService.CreateNotification(notification);
+
+				notification.NotifyFor = affectedUser;
+				notifyService.CreateNotification(notification);
+
 				return true;
 			}
 			else

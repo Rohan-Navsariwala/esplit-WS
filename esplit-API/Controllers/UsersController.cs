@@ -39,7 +39,7 @@ namespace esplit_API.Controllers
 		}
 
 		[HttpDelete("{userID}")]
-		public IActionResult DeleteUser(string userID)
+		public IActionResult DeleteAccount(string userID)
 		{
 			UserRepository userRepository = new UserRepository();
 			if (userRepository.DeleteUser(userID))
@@ -53,10 +53,10 @@ namespace esplit_API.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult CreateUser(User user)
+		public IActionResult Resgister(User user)
 		{
-			RegistrationService registrationService = new RegistrationService();
-			if (registrationService.RegisterUser(user))
+			UserService userService = new UserService();
+			if (userService.RegisterUser(user))
 			{
 				return Ok("User Created Successfully :)");
 			}
@@ -68,10 +68,10 @@ namespace esplit_API.Controllers
 
 		[HttpPost]
 		[Route("auth")]
-		public IActionResult AuthenticateUser(string userName, string password)
+		public IActionResult Login(string userName, string password)
 		{
-			AuthService authService = new AuthService();
-			User userData = authService.Authenticate(userName, password);
+			UserService userService = new UserService();
+			User userData = userService.Authenticate(userName, password);
 			if(userData != null)
 			{
 				return Ok(userData);

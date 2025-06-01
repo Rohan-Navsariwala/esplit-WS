@@ -17,9 +17,10 @@ namespace esplit_API.Controllers
 		}
 
 		[HttpGet]
-		public IActionResult GetContacts(int userID, string connectionStatus = "APPROVED")
+		public IActionResult GetContacts(int userID, string contactStatus = "APPROVED")
 		{
-			List<ContactDto> connections = contactService.GetContacts(userID, connectionStatus);
+			ContactStatus status = (ContactStatus)Enum.Parse(typeof(ContactStatus), contactStatus);
+			List<ContactDto> connections = contactService.GetContacts(userID, status);
 			if(connections != null && connections.Count > 0)
 			{
 				return Ok(connections);
@@ -60,24 +61,27 @@ namespace esplit_API.Controllers
 
 		[HttpPost]
 		[Route("InteractConnectionRequest")]
-		public IActionResult InteractContactRequest(int contactID, string connectionStatus)
+		public IActionResult InteractContactRequest(int contactID, string contactStatus)
 		{
-			if(contactService.InteractContact(contactID, connectionStatus))
+			ContactStatus status = (ContactStatus)Enum.Parse(typeof(ContactStatus), contactStatus);
+
+			if (contactService.InteractContact(contactID, status))
 			{
-				return Ok($"Connection {connectionStatus} successful.");
+				return Ok($"Connection {contactStatus} successful.");
 			}
 			else
 			{
-				return BadRequest($"Failed to {connectionStatus} with connection.");
+				return BadRequest($"Failed to {contactStatus} with connection.");
 			}
 
 		}
 
 		[HttpGet]
 		[Route("GetConnectionRequests")]
-		public IActionResult GetContactRequests(int userID, string actionType,string connectionStatus = "PENDING")
+		public IActionResult GetContactRequests(int userID, string actionType, string contactStatus = "PENDING")
 		{
-			List<ContactDto> connections = contactService.GetContacts(userID, connectionStatus, actionType);
+			ContactStatus status = (ContactStatus)Enum.Parse(typeof(ContactStatus), contactStatus);
+			List<ContactDto> connections = contactService.GetContacts(userID, status, actionType);
 			if (connections != null && connections.Count > 0)
 			{
 				return Ok(connections);

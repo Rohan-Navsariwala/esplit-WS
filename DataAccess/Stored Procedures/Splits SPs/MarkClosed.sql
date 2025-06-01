@@ -12,5 +12,5 @@ as
 begin
 	update Splits
 	set IsClosed = '1'
-	where SPlitID = @SplitID and UserID = @UserID
+	where SplitID = @SplitID and CreatedBy = @UserID
 end
