@@ -1,5 +1,9 @@
+using Common.Utils;
 using DataAccess;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Text;
 
 namespace esplit_API
 {
@@ -9,12 +13,30 @@ namespace esplit_API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddControllers();
+			builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+			var jwtOptions = builder.Configuration.GetSection("Jwt").Get<JwtOptions>();
 
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+			builder.Services.AddAuthentication("Bearer")
+				.AddJwtBearer("Bearer", options =>
+				{
+					options.TokenValidationParameters = new TokenValidationParameters {
+						ValidateIssuer = true,
+						ValidateAudience = true,
+						ValidateLifetime = true,
+						ValidateIssuerSigningKey = true,
+						ValidIssuer = jwtOptions.Issuer,
+						ValidAudience = jwtOptions.Audience,
+						IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
+						NameClaimType = "name"
+					};
+				});
+
+			builder.Services.AddAuthorization();
+			builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            dbMethods._connectionString = builder.Configuration.GetConnectionString((Environment.MachineName == "ALBATROSS") ? "pString" : "wString");
+
+            dbMethods._connectionString = builder.Configuration.GetConnectionString(Environment.MachineName);
 
 			var app = builder.Build();
 
@@ -25,18 +47,6 @@ namespace esplit_API
             }
 
             app.UseHttpsRedirection();
-
-			//builder.Services.AddCors(options =>
-			//{
-			//	options.AddDefaultPolicy(policy =>
-			//	{
-			//		policy.AllowAnyOrigin()
-			//			  .AllowAnyMethod()
-			//			  .AllowAnyHeader();
-			//	});
-			//});
-
-			//app.UseCors(); // Add this before app.UseAuthorization()
 
 			app.UseAuthorization();
 

@@ -80,7 +80,7 @@ namespace DataAccess.Repositories
 		/// </summary>
 		/// <param name="userID"></param>
 		/// <returns></returns>
-		public bool DeleteUser(string userID)
+		public bool DeleteUser(int userID)
 		{
 			Dictionary<string, object> UserInfo = new Dictionary<string, object>()
 			{

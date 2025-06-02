@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Common.Types;
 using Biz.Services;
 using System.Data;
+using Common.Utils;
+using Microsoft.AspNetCore.Authorization;
 
 namespace esplit_API.Controllers
 {
@@ -16,9 +18,11 @@ namespace esplit_API.Controllers
 			contactService = new ContactService();
 		}
 
+		[Authorize]
 		[HttpGet]
-		public IActionResult GetContacts(int userID, string contactStatus = "APPROVED")
+		public IActionResult GetContacts(string contactStatus = "APPROVED")
 		{
+			(_, int userID) = CommonMethods.GetClaims(User.Claims);
 			ContactStatus status = (ContactStatus)Enum.Parse(typeof(ContactStatus), contactStatus);
 			List<ContactDto> connections = contactService.GetContacts(userID, status);
 			if(connections != null && connections.Count > 0)
@@ -44,10 +48,12 @@ namespace esplit_API.Controllers
 			}
 		}
 
+		[Authorize]
 		[HttpPost]
 		[Route("CreateConnection")]
-		public IActionResult CreateContact(int userID, string toUserName)
+		public IActionResult CreateContact(string toUserName)
 		{
+			(_, int userID) = CommonMethods.GetClaims(User.Claims);
 			int contactID = contactService.CreateContact(userID, toUserName);
 			if (contactID > 0)
 			{
@@ -76,10 +82,12 @@ namespace esplit_API.Controllers
 
 		}
 
+		[Authorize]
 		[HttpGet]
 		[Route("GetConnectionRequests")]
-		public IActionResult GetContactRequests(int userID, string actionType, string contactStatus = "PENDING")
+		public IActionResult GetContactRequests(string actionType = "Received", string contactStatus = "PENDING")
 		{
+			(_, int userID) = CommonMethods.GetClaims(User.Claims);
 			ContactStatus status = (ContactStatus)Enum.Parse(typeof(ContactStatus), contactStatus);
 			List<ContactDto> connections = contactService.GetContacts(userID, status, actionType);
 			if (connections != null && connections.Count > 0)

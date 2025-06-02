@@ -4,6 +4,13 @@ using Common.Types;
 using Biz.Services;
 using DataAccess.Repositories;
 using System.Diagnostics.Eventing.Reader;
+using Common.Utils;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authorization;
 
 namespace esplit_API.Controllers
 {
@@ -11,7 +18,11 @@ namespace esplit_API.Controllers
 	[ApiController]
 	public class UsersController : ControllerBase
 	{
-		public UsersController() { }
+		private readonly JwtOptions _jwtOptions;
+		public UsersController(IOptions<JwtOptions> jwtOptions) 
+		{
+			_jwtOptions = jwtOptions.Value;
+		}
 
 		[HttpGet("{user}")]
 		public IActionResult GetUser(string user)
@@ -38,10 +49,12 @@ namespace esplit_API.Controllers
 			}
 		}
 
-		[HttpDelete("{userID}")]
-		public IActionResult DeleteAccount(string userID)
+		[Authorize]
+		[HttpDelete]
+		public IActionResult DeleteAccount()
 		{
 			UserRepository userRepository = new UserRepository();
+			(_, int userID) = CommonMethods.GetClaims(User.Claims);
 			if (userRepository.DeleteUser(userID))
 			{
 				return Ok("User Deleted Successfully");
@@ -53,7 +66,7 @@ namespace esplit_API.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult Resgister(User user)
+		public IActionResult Register(User user)
 		{
 			UserService userService = new UserService();
 			if (userService.RegisterUser(user))
@@ -74,12 +87,37 @@ namespace esplit_API.Controllers
 			User userData = userService.Authenticate(userName, password);
 			if(userData != null)
 			{
-				return Ok(userData);
+				var claims = new[]
+				{
+					new Claim("name", userName),
+					new Claim("uid", userData.UserID.ToString())
+				};
+
+				var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.Key));
+				var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+				var token = new JwtSecurityToken(
+					issuer: _jwtOptions.Issuer,
+					audience: _jwtOptions.Audience,
+					claims: claims,
+					expires: DateTime.UtcNow.AddMinutes(_jwtOptions.ExpireMinutes),
+					signingCredentials: creds
+				);
+
+				return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(token), data = userData });
 			}
 			else
 			{
-				return BadRequest();
+				return Unauthorized();
 			}
+		}
+
+		[Authorize]
+		[HttpGet]
+		[Route("Test")]
+		public IActionResult Test()
+		{
+			(string userName, int userID) = CommonMethods.GetClaims(User.Claims);
+			return Ok(new { userID, userName });
 		}
 	}
 }
