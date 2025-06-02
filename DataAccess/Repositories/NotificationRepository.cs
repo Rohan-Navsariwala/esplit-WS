@@ -36,7 +36,7 @@ namespace DataAccess.Repositories
 			Dictionary<string, object> parameters = new Dictionary<string, object>
 			{
 				{ "NotificationID", notificationID },
-				{ "UserID", userID }
+				{ "NotifyFor", userID }
 			};
 			return (bool)DataAccess.dbMethods.DbUpdate("DeleteNotification", parameters);
 		}
@@ -50,7 +50,7 @@ namespace DataAccess.Repositories
 		{
 			Dictionary<string, object> parameters = new Dictionary<string, object>
 			{
-				{ "UserID", userID }
+				{ "NotifyFor", userID }
 			};
 			return DataAccess.dbMethods.DbSelect<Notification>("GetNotifications", parameters, reader =>
 			{

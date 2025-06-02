@@ -7,9 +7,9 @@ GO
 
 create procedure DeleteSplitParticipant
 	@SplitID int,
-	@UserID int
+	@SplitParticipantID int
 as
 begin 
 	delete from SplitContacts
-	where SplitID = @SplitID and SplitParticipantID = @UserID
+	where SplitID = @SplitID and SplitParticipantID = @SplitParticipantID
 end

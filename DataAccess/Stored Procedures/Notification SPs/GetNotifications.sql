@@ -6,10 +6,10 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 create procedure GetNotifications
-	@UserID int
+	@NotifyFor int
 as
 begin
 	select * from Notifications
-	where NotifyFor=@UserID 
+	where NotifyFor=@NotifyFor
 	and IsDeleted=0
 end

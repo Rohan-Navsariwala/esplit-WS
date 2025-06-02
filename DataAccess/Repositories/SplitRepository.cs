@@ -26,18 +26,18 @@ namespace DataAccess.Repositories
 		{
 			Dictionary<string, object> parameters = new Dictionary<string, object>()
 			{
-				{ "CreatedBy", split.CreatedBy },
+				{ "UserID", split.CreatedBy },
 				{ "SplitAmount", split.SplitAmount },
 				{ "SplitDescription", split.SplitDescription }
 			};
 			return Convert.ToInt32(DataAccess.dbMethods.DbUpdate("CreateSplit", parameters, true));
 		}
 
-		public bool DeleteSplitParticipant(int userID, int splitID)
+		public bool DeleteSplitParticipant(int splitParticipantID, int splitID)
 		{
 			Dictionary<string, object> parameters = new Dictionary<string, object>()
 			{
-				{ "UserID", userID },
+				{ "SplitParticipantID", splitParticipantID },
 				{ "SplitID", splitID }
 			};
 			return (bool)DataAccess.dbMethods.DbUpdate("DeleteSplitParticipant", parameters);

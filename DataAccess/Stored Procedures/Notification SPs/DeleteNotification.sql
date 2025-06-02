@@ -7,11 +7,11 @@ GO
 
 create procedure DeleteNotification
 	@NotificationID int,
-	@UserID int
+	@NotifyFor int
 as
 begin
 	update Notifications
 	set isDeleted='1' --this is boolean
 	where NotificationID=@NotificationID
-	and NotifyFor=@UserID
+	and NotifyFor=@NotifyFor
 end
