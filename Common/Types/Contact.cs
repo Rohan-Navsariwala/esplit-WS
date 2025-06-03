@@ -25,4 +25,11 @@ namespace Common.Types
 		REJECTED = 3,
 		DELETED = 4
 	}
+
+	public enum ContactRequestDirection
+	{
+		NILL = 0,
+		SENT = 1,
+		RECEIVED = 2
+	}
 }

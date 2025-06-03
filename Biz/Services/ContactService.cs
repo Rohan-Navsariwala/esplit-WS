@@ -1,50 +1,61 @@
 ﻿using Common;
 using Common.Types;
+using Common.Utils;
 using DataAccess.Repositories;
 
 namespace Biz.Services
 {
 	public class ContactService
 	{
-		ContactRepository contactRepo;
-		NotificationService notifyService;
-		UserService userService;
-		public ContactService() 
+		private readonly ContactRepository contactRepo;
+		private readonly NotificationService notifyService;
+		private readonly CacheService _cache;
+		private readonly CommonMethods _commonMethods;
+		public ContactService(CacheService cache, NotificationService notificationService, CommonMethods commonMethods) 
 		{
 			contactRepo = new ContactRepository();
-			notifyService = new NotificationService();
+			notifyService = notificationService;
+			_cache = cache;
+			_commonMethods = commonMethods;
 		}
 
-		public List<ContactDto> GetContacts(int userID, ContactStatus contactStatus, string actionType = "")
+		public List<ContactDto> GetContacts(int userID, ContactStatus contactStatus, ContactRequestDirection actionType = ContactRequestDirection.NILL)
 		{
-			//later we have to add authorization checks before returing any connections
 			List<ContactDto> contacts = contactRepo.GetContacts(userID, contactStatus);
-			if(actionType == "Sent" && contactStatus == ContactStatus.PENDING)
+			List<ContactDto> result;
+			string cacheKey = $"Contacts_{actionType}_{contactStatus}_{userID}";
+
+			if (contactStatus == ContactStatus.PENDING)
 			{
-				return contacts.Where(c => c.ContactData.UserID1 == userID).ToList();
-			}
-			else if(actionType == "Received" && contactStatus == ContactStatus.PENDING)
-			{
-				return contacts.Where(c => c.ContactData.UserID2 == userID).ToList();
+				result = actionType switch
+				{
+					ContactRequestDirection.SENT => contacts.Where(c => c.ContactData.UserID1 == userID).ToList(),
+					ContactRequestDirection.RECEIVED => contacts.Where(c => c.ContactData.UserID2 == userID).ToList(),
+					_ => contacts
+				};
 			}
 			else
 			{
-				return contacts;
+				result = contacts;
 			}
+
+			_cache.InsertIntoCache(cacheKey, result);
+			return result;
 		}
 
-		public int CreateContact(int userID, string toUserName)
-		{
-			//auth checks
-			int ContactID = contactRepo.CreateContact(userID, toUserName);
 
-			if (ContactID > 0)
+		public int CreateContact(string toUserName)
+		{
+			(string userName, int userID) = _commonMethods.GetClaims();
+			int toUserID = contactRepo.CreateContact(userID, toUserName);
+
+			if (toUserID > 0)
 			{
-				userService = new UserService();
+				UserService userService = new UserService();
 				Notification notification = new Notification()
 				{
 					NotifyFor = userID,
-					ActionPerformedBy = "",
+					ActionPerformedBy = userName,
 					NotificationText = NotificationText.ConnectionCreated,
 					NotificationType = NotificationType.CONNECTION_SENT
 				};
@@ -54,7 +65,7 @@ namespace Biz.Services
 				notification.NotificationText = NotificationText.ConnectionRequested;
 				notifyService.CreateNotification(notification);
 				
-				return ContactID;
+				return toUserID;
 			}
 			else
 			{

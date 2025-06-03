@@ -13,7 +13,7 @@ namespace DataAccess.Repositories
 	public class ContactRepository
 	{
 		/// <summary>
-		/// this methods creates and initiates a connection
+		/// this methods creates and initiates a connection and returns toUserID
 		/// </summary>
 		/// <param name="userID"></param>
 		/// <param name="toUserName"></param>

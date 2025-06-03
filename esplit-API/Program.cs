@@ -1,3 +1,4 @@
+using Biz.Services;
 using Common.Utils;
 using DataAccess;
 using Microsoft.Extensions.Configuration;
@@ -35,6 +36,13 @@ namespace esplit_API
 			builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+			builder.Services.AddMemoryCache();
+			builder.Services.AddHttpContextAccessor();
+
+			builder.Services.AddScoped<CacheService>();
+			builder.Services.AddScoped<CommonMethods>();
+			builder.Services.AddScoped<NotificationService>();
+
 
             dbMethods._connectionString = builder.Configuration.GetConnectionString(Environment.MachineName);
 

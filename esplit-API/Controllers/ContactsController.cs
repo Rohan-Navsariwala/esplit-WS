@@ -13,16 +13,18 @@ namespace esplit_API.Controllers
 	public class ContactsController : ControllerBase
 	{
 		ContactService contactService;
-		public ContactsController() 
+		CommonMethods _commonMethods;
+		public ContactsController(CommonMethods commonMethods) 
 		{
 			contactService = new ContactService();
+			_commonMethods = commonMethods;
 		}
 
 		[Authorize]
 		[HttpGet]
 		public IActionResult GetContacts(string contactStatus = "APPROVED")
 		{
-			(_, int userID) = CommonMethods.GetClaims(User.Claims);
+			(_, int userID) = _commonMethods.GetClaims(User.Claims);
 			ContactStatus status = (ContactStatus)Enum.Parse(typeof(ContactStatus), contactStatus);
 			List<ContactDto> connections = contactService.GetContacts(userID, status);
 			if(connections != null && connections.Count > 0)
@@ -53,7 +55,7 @@ namespace esplit_API.Controllers
 		[Route("CreateConnection")]
 		public IActionResult CreateContact(string toUserName)
 		{
-			(_, int userID) = CommonMethods.GetClaims(User.Claims);
+			(_, int userID) = _commonMethods.GetClaims(User.Claims);
 			int contactID = contactService.CreateContact(userID, toUserName);
 			if (contactID > 0)
 			{
@@ -85,11 +87,13 @@ namespace esplit_API.Controllers
 		[Authorize]
 		[HttpGet]
 		[Route("GetConnectionRequests")]
-		public IActionResult GetContactRequests(string actionType = "Received", string contactStatus = "PENDING")
+		public IActionResult GetContactRequests(string actionType = "RECEIVED", string contactStatus = "PENDING")
 		{
-			(_, int userID) = CommonMethods.GetClaims(User.Claims);
+			(_, int userID) = _commonMethods.GetClaims(User.Claims);
 			ContactStatus status = (ContactStatus)Enum.Parse(typeof(ContactStatus), contactStatus);
-			List<ContactDto> connections = contactService.GetContacts(userID, status, actionType);
+			ContactRequestDirection dir = (ContactRequestDirection)Enum.Parse(typeof(ContactRequestDirection), actionType);
+
+			List<ContactDto> connections = contactService.GetContacts(userID, status, dir);
 			if (connections != null && connections.Count > 0)
 			{
 				return Ok(connections);

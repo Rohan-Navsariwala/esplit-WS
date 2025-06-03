@@ -17,5 +17,5 @@ begin
 
 	insert into Contacts (UserID1, UserID2, ContactStatus)
 	values (@UserID, @toUserID, '1'); -- 1 is for PENDING
-	SELECT SCOPE_IDENTITY();
+	SELECT @toUserID;
 end
