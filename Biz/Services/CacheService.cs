@@ -15,7 +15,7 @@ namespace Biz.Services
 			_cache = cache;
 		}
 
-		public object GetFromCache<T>(string key)
+		public object GetFromCache(string key)
 		{
 			return _cache.Get(key) ?? null;
 		}
