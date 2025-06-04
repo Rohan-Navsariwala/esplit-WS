@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace Common.Utils
 {
-	public class CommonMethods
+	public class Identity
 	{
 		private readonly IHttpContextAccessor _httpContextAccessor;
 
-		public CommonMethods(IHttpContextAccessor httpContextAccessor)
+		public Identity(IHttpContextAccessor httpContextAccessor)
 		{
 			_httpContextAccessor = httpContextAccessor;
 		}

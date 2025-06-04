@@ -13,20 +13,17 @@ namespace esplit_API.Controllers
 	public class ContactsController : ControllerBase
 	{
 		ContactService contactService;
-		CommonMethods _commonMethods;
-		public ContactsController(CommonMethods commonMethods) 
+		public ContactsController(NotificationService _notifySerive, CacheService _cache, Identity _common) 
 		{
-			contactService = new ContactService();
-			_commonMethods = commonMethods;
+			contactService = new ContactService(_cache, _notifySerive, _common);
 		}
 
 		[Authorize]
 		[HttpGet]
 		public IActionResult GetContacts(string contactStatus = "APPROVED")
 		{
-			(_, int userID) = _commonMethods.GetClaims(User.Claims);
 			ContactStatus status = (ContactStatus)Enum.Parse(typeof(ContactStatus), contactStatus);
-			List<ContactDto> connections = contactService.GetContacts(userID, status);
+			List<ContactDto> connections = contactService.GetContacts(status);
 			if(connections != null && connections.Count > 0)
 			{
 				return Ok(connections);
@@ -55,11 +52,11 @@ namespace esplit_API.Controllers
 		[Route("CreateConnection")]
 		public IActionResult CreateContact(string toUserName)
 		{
-			(_, int userID) = _commonMethods.GetClaims(User.Claims);
-			int contactID = contactService.CreateContact(userID, toUserName);
-			if (contactID > 0)
+			bool contact = contactService.CreateContact(toUserName);
+			if (contact != null)
 			{
-				return Ok(new { ContactID = contactID });
+				//return Ok(new { ContactID = contact });
+				return Ok("Contact created successfully");
 			}
 			else
 			{
@@ -89,11 +86,10 @@ namespace esplit_API.Controllers
 		[Route("GetConnectionRequests")]
 		public IActionResult GetContactRequests(string actionType = "RECEIVED", string contactStatus = "PENDING")
 		{
-			(_, int userID) = _commonMethods.GetClaims(User.Claims);
 			ContactStatus status = (ContactStatus)Enum.Parse(typeof(ContactStatus), contactStatus);
 			ContactRequestDirection dir = (ContactRequestDirection)Enum.Parse(typeof(ContactRequestDirection), actionType);
 
-			List<ContactDto> connections = contactService.GetContacts(userID, status, dir);
+			List<ContactDto> connections = contactService.GetContacts(status, dir);
 			if (connections != null && connections.Count > 0)
 			{
 				return Ok(connections);

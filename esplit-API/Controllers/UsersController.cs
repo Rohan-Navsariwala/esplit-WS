@@ -19,8 +19,8 @@ namespace esplit_API.Controllers
 	public class UsersController : ControllerBase
 	{
 		private readonly JwtOptions _jwtOptions;
-		private readonly CommonMethods _commonMethods;
-		public UsersController(IOptions<JwtOptions> jwtOptions, CommonMethods commonMethods) 
+		private readonly Identity _commonMethods;
+		public UsersController(IOptions<JwtOptions> jwtOptions, Identity commonMethods) 
 		{
 			_jwtOptions = jwtOptions.Value;
 			_commonMethods = commonMethods;
@@ -56,7 +56,7 @@ namespace esplit_API.Controllers
 		public IActionResult DeleteAccount()
 		{
 			UserRepository userRepository = new UserRepository();
-			(_, int userID) = _commonMethods.GetClaims(User.Claims);
+			(_, int userID) = _commonMethods.GetClaims();
 			if (userRepository.DeleteUser(userID))
 			{
 				return Ok("User Deleted Successfully");
@@ -118,7 +118,7 @@ namespace esplit_API.Controllers
 		[Route("Test")]
 		public IActionResult Test()
 		{
-			(string userName, int userID) = _commonMethods.GetClaims(User.Claims);
+			(string userName, int userID) = _commonMethods.GetClaims();
 			return Ok(new { userID, userName });
 		}
 	}

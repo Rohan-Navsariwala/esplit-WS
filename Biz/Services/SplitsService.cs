@@ -1,23 +1,39 @@
 ﻿using DataAccess.Repositories;
 using Common.Types;
 using Common;
+using static Azure.Core.HttpHeader;
+using Common.Utils;
 
 namespace Biz.Services
 {
 	public class SplitsService
 	{
-		SplitRepository splitRepository;
-		NotificationService notifyService;
-		public SplitsService()
+		private readonly SplitRepository splitRepository;
+		private readonly NotificationService notifyService;
+		private readonly CacheService _cache;
+		private readonly Identity _common;
+		private readonly UserRepository userRepository;
+		private readonly int _userID;
+		private readonly string _userName;
+
+		public SplitsService(NotificationService notifyService, CacheService cache, Identity common)
 		{
 			splitRepository = new SplitRepository();
-			notifyService = new NotificationService();
+			this.notifyService = notifyService;
+			userRepository = new UserRepository();
+			_cache = cache;
+			_common = common;
+			(_userName, _userID) = _common.GetClaims();
 		}
 
-		public List<SplitInfo> GetSplits(int userID, SplitStatus splitStatus)
+		public List<SplitInfo> GetSplits(SplitStatus splitStatus)
 		{
-			//SplitStatus status = (SplitStatus)Enum.Parse(typeof(SplitStatus), splitStatus);
-			return splitRepository.GetSplits(userID, splitStatus);
+			
+			List<SplitInfo> splits = splitRepository.GetSplits(_userID, splitStatus);
+			string cacheKey = $"Split_{splitStatus}_{_userID}";
+
+			return _cache.InsertIntoCache<List<SplitInfo>>(cacheKey, splits);
+
 		}
 
 		public List<ParticipantDto> GetParticipants(int splitID)
@@ -28,8 +44,15 @@ namespace Biz.Services
 		public bool CreateSplit(Split split)
 		{
 			int splitID = splitRepository.CreateSplit(split.Info);
+
 			if (splitID > 0)
 			{
+				//as we have to update the cache for new split created, which will be utilized in the further process of adding participants
+				string cacheKey = $"Split_{SplitStatus.OWNED}_{_userID}";
+				List<SplitInfo> splits = (List<SplitInfo>)_cache.GetFromCache(cacheKey);
+				splits.Add(split.Info);
+				_cache.InsertIntoCache(cacheKey, splits);
+
 				foreach (SplitContact contact in split.Contacts)
 				{
 					contact.SplitID = splitID;
@@ -37,9 +60,10 @@ namespace Biz.Services
 					AddSplitParticipant(contact);
 				}
 			}
+
 			Notification notification = new Notification() {
-				NotifyFor = 1, //myself
-				ActionPerformedBy = "SYSTEM",
+				NotifyFor = _userID,
+				ActionPerformedBy = NotificationType.SYSTEM.ToString(),
 				NotificationText = NotificationText.SplitCreated,
 				NotificationType = NotificationType.SPLIT_CREATED
 			};
@@ -49,65 +73,21 @@ namespace Biz.Services
 
 		public bool AddSplitParticipant(SplitContact splitContact)
 		{
-			if (splitRepository.AddSplitParticipant(splitContact))
+			if (IsOperationAllowed(splitContact.SplitID, SplitStatus.OWNED))
 			{
-				Notification notification = new Notification() {
-					NotifyFor = splitContact.SplitParticipantID,
-					ActionPerformedBy = "user",
-					NotificationText = NotificationText.AddedAsParticipant,
-					NotificationType = NotificationType.SPLIT_PARTICIPANT_ADDED
-				};
-				if(notifyService.CreateNotification(notification) > 0)
+				if (splitRepository.AddSplitParticipant(splitContact))
 				{
+					Notification notification = new Notification()
+					{
+						NotifyFor = splitContact.SplitParticipantID,
+						ActionPerformedBy = userRepository.GetUserNameByID(splitContact.SplitParticipantID),
+						NotificationText = NotificationText.AddedAsParticipant + _userName,
+						NotificationType = NotificationType.SPLIT_PARTICIPANT_ADDED
+					};
+
 					return true;
 				}
-				else
-				{
-					return false;
-				}
-			}
-			return false;
-		}
-
-		public bool DeleteSplitParticipant(int userID, int splitID)
-		{
-			if(splitRepository.DeleteSplitParticipant(userID, splitID))
-			{
-				Notification notification = new Notification() {
-					NotifyFor = 1, //myself
-					ActionPerformedBy = "SYSTEM",
-					NotificationText = NotificationText.ConnectionDeleted,
-					NotificationType = NotificationType.SPLIT_PARTICIPANT_DELETED
-				};
-				if (notifyService.CreateNotification(notification) > 0)
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-			return false;
-		}
-
-		public bool PayDue(int userID, int splitID)
-		{
-			if(splitRepository.PayDue(userID, splitID))
-			{
-				Notification notification = new Notification() {
-					NotifyFor = 1, //split owner
-					ActionPerformedBy = "me user",
-					NotificationText = NotificationText.UserHasPaid,
-					NotificationType = NotificationType.SPLIT_PAYMENT
-				};
-				notifyService.CreateNotification(notification);
-
-				notification.NotifyFor = 0; //user who performed , myself
-				notification.NotificationText = NotificationText.SplitPaid;
-				notifyService.CreateNotification(notification);
-
-				return true;
+				return false;
 			}
 			else
 			{
@@ -115,24 +95,44 @@ namespace Biz.Services
 			}
 		}
 
-		public bool ToggleSplit(int userID, int splitID, string splitStatus)
+		public bool DeleteSplitParticipant(int userIDtoBeDeleted, int splitID)
 		{
-			SplitStatus status = (SplitStatus)Enum.Parse(typeof(SplitStatus), splitStatus);
-			return splitRepository.ToggleSplit(userID, splitID, status);
+			if (IsOperationAllowed(splitID, SplitStatus.OWNED))
+			{
+				if (splitRepository.DeleteSplitParticipant(userIDtoBeDeleted, splitID))
+				{
+					Notification notification = new Notification()
+					{
+						NotifyFor = _userID,
+						ActionPerformedBy = NotificationType.SYSTEM.ToString(),
+						NotificationText = NotificationText.ConnectionDeleted + userRepository.GetUserNameByID(userIDtoBeDeleted),
+						NotificationType = NotificationType.SPLIT_PARTICIPANT_DELETED
+					};
+					return true;
+				}
+				return false;
+			}
+			else
+			{
+				return false;
+			}
 		}
 
-		public bool MarkClosed(int userID, int splitID)
-		{
-			if(splitRepository.MarkClosed(userID, splitID))
+		public bool PayDue(int splitID)
+		{	//we still have a vulnerability here of performing status change operation with togglesplit even after paydue since the cache is not updated for removing the split from the list, but that is not high priority and i'll do it later
+			if (IsOperationAllowed(splitID, SplitStatus.ALL))
 			{
-				Notification notification = new Notification() {
-					NotifyFor = 1,
-					ActionPerformedBy = "SYSTEM",
-					NotificationText = NotificationText.CloseSplit,
-					NotificationType = NotificationType.SPLIT_PARTICIPANT_ADDED
-				};
-				if (notifyService.CreateNotification(notification) > 0)
+				if (splitRepository.PayDue(_userID, splitID))
 				{
+					Notification notification = new Notification()
+					{
+						NotifyFor = 1, //split owner
+						ActionPerformedBy = _userName,
+						NotificationText = NotificationText.UserHasPaid,
+						NotificationType = NotificationType.SPLIT_PAYMENT
+					};
+					notifyService.CreateNotification(notification);
+
 					return true;
 				}
 				else
@@ -140,7 +140,99 @@ namespace Biz.Services
 					return false;
 				}
 			}
-			return false;
+			else
+			{
+				return false;
+			}
+		}
+
+		public bool ToggleSplit(int splitID, string splitStatus)
+		{
+			//also utilize the common generic split with all status, the split status makes the difference, here the cases might be accept and reject
+			SplitStatus status = (SplitStatus)Enum.Parse(typeof(SplitStatus), splitStatus);
+			if(IsOperationAllowed(splitID, SplitStatus.ALL))
+			{
+
+				if(splitRepository.ToggleSplit(_userID, splitID, status))
+				{
+					Notification notification = new Notification()
+					{
+						NotifyFor = 1, //owner of that split needs to be notified
+						ActionPerformedBy = _userName,
+						NotificationText = (status == SplitStatus.APPROVED_UNPAID) ? NotificationText.SplitRequestAccepted : NotificationText.SplitRequestRejected,
+						NotificationType = (status == SplitStatus.APPROVED_UNPAID) ? NotificationType.SPLIT_APPROVAL : NotificationType.SPLIT_REJECTED
+					};
+					notifyService.CreateNotification(notification);
+
+					string cacheKey = $"Split_{SplitStatus.ALL}_{_userID}";
+					List<SplitInfo> splits;
+					splits = (List<SplitInfo>)_cache.GetFromCache(cacheKey);
+					splits.Add(new SplitInfo() { SplitID = splitID });
+					_cache.InsertIntoCache(cacheKey, splits);
+
+					return true;
+				}
+				return false;
+			}
+			else
+			{
+				return false;
+			}
+
+
+			//also update the cache straight after toggling the split
+		}
+
+		public bool MarkClosed(int splitID)
+		{
+			if (IsOperationAllowed(splitID, SplitStatus.OWNED))
+			{
+				if (splitRepository.MarkClosed(_userID, splitID))
+				{
+					Notification notification = new Notification()
+					{
+						NotifyFor = _userID, //notification needed to be sent to all the users about split is closed or just the logged in user that decide
+						ActionPerformedBy = "SYSTEM", //this will change to current user if notify sent to all participants
+						NotificationText = NotificationText.CloseSplit,
+						NotificationType = NotificationType.SPLIT_CLOSED
+					};
+					notifyService.CreateNotification(notification);
+
+					return true;
+				}
+				return false;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		public bool IsOperationAllowed(int SplitID, SplitStatus status)
+		{
+			//The split status can either be OWNED or ALL as we have cached data based on these 2 only
+			string cacheKey = $"Split_{status}_{_userID}";
+			List<SplitInfo> splits;
+
+			try
+			{
+				splits = (List<SplitInfo>)_cache.GetFromCache(cacheKey);
+			}
+			catch (Exception e)
+			{
+				//rather than returning false, i can populate the cache
+				Console.WriteLine(e);
+				splits = _cache.InsertIntoCache(cacheKey, splitRepository.GetSplits(_userID, status));
+			}
+
+			if(splits.Find(s => s.SplitID == SplitID) != null)
+			{
+				return true;
+			} 
+			else
+			{
+				return false;
+			}
 		}
 	}
 }

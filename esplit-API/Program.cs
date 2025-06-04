@@ -40,11 +40,11 @@ namespace esplit_API
 			builder.Services.AddHttpContextAccessor();
 
 			builder.Services.AddScoped<CacheService>();
-			builder.Services.AddScoped<CommonMethods>();
+			builder.Services.AddScoped<Identity>();
 			builder.Services.AddScoped<NotificationService>();
 
 
-            dbMethods._connectionString = builder.Configuration.GetConnectionString(Environment.MachineName);
+            DBMethods._connectionString = builder.Configuration.GetConnectionString(Environment.MachineName);
 
 			var app = builder.Build();
 

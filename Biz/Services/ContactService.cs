@@ -10,27 +10,30 @@ namespace Biz.Services
 		private readonly ContactRepository contactRepo;
 		private readonly NotificationService notifyService;
 		private readonly CacheService _cache;
-		private readonly CommonMethods _common;
-		public ContactService(CacheService cache, NotificationService notificationService, CommonMethods commonMethods) 
+		private readonly Identity _common;
+		private readonly int _userID;
+		private readonly string _userName;
+		public ContactService(CacheService cache, NotificationService notificationService, Identity commonMethods) 
 		{
 			contactRepo = new ContactRepository();
 			notifyService = notificationService;
 			_cache = cache;
 			_common = commonMethods;
+			(_userName, _userID) = _common.GetClaims();
 		}
 
-		public List<ContactDto> GetContacts(int userID, ContactStatus contactStatus, ContactRequestDirection reqdir = ContactRequestDirection.NILL)
+		public List<ContactDto> GetContacts(ContactStatus contactStatus, ContactRequestDirection reqdir = ContactRequestDirection.NILL)
 		{
-			List<ContactDto> contacts = contactRepo.GetContacts(userID, contactStatus);
+			List<ContactDto> contacts = contactRepo.GetContacts(_userID, contactStatus);
 			List<ContactDto> result;
-			string cacheKey = $"Contacts_{reqdir}_{contactStatus}_{userID}";
+			string cacheKey = $"Contacts_{reqdir}_{contactStatus}_{_userID}";
 
 			if (contactStatus == ContactStatus.PENDING)
 			{
 				result = reqdir switch
 				{
-					ContactRequestDirection.SENT => contacts.Where(c => c.ContactData.UserID1 == userID).ToList(),
-					ContactRequestDirection.RECEIVED => contacts.Where(c => c.ContactData.UserID2 == userID).ToList(),
+					ContactRequestDirection.SENT => contacts.Where(c => c.ContactData.UserID1 == _userID).ToList(),
+					ContactRequestDirection.RECEIVED => contacts.Where(c => c.ContactData.UserID2 == _userID).ToList(),
 					_ => contacts
 				};
 			}
@@ -44,32 +47,32 @@ namespace Biz.Services
 		}
 
 
-		public Contact CreateContact(string toUserName)
+		public bool CreateContact(string toUserName)
 		{
-			(string userName, int userID) = _common.GetClaims();
-			int ContactID = contactRepo.CreateContact(userID, toUserName);
+			int ContactID = contactRepo.CreateContact(_userID, toUserName);
 
 			if (ContactID > 0)
 			{
 				UserService userService = new UserService();
 				Notification notification = new Notification()
 				{
-					NotifyFor = userID,
-					ActionPerformedBy = userName,
+					NotifyFor = _userID,
+					ActionPerformedBy = _userName,
 					NotificationText = NotificationText.ConnectionCreated + toUserName,
 					NotificationType = NotificationType.CONNECTION_SENT
 				};
 				notifyService.CreateNotification(notification);
 
 				notification.NotifyFor = userService.GetUserID(toUserName);
-				notification.NotificationText = NotificationText.ConnectionRequested + userName;
+				notification.NotificationText = NotificationText.ConnectionRequested + _userName;
 				notifyService.CreateNotification(notification);
-				
-				return contactRepo.GetThisContact(ContactID);
+
+				//return contactRepo.GetThisContact(ContactID);
+				return true;
 			}
 			else
 			{
-				return null;
+				return false;
 			}
 		}
 
@@ -151,12 +154,11 @@ namespace Biz.Services
 		/// <returns></returns>
 		public bool IsOperationAllowed(int ContactID, string operation = "")
 		{
-			(_, int userID) = _common.GetClaims();
 			ContactStatus contactStatus = (operation == "DELETE") ? ContactStatus.APPROVED : ContactStatus.PENDING;
 			ContactRequestDirection reqdir = (operation == "DELETE") ? ContactRequestDirection.NILL : ContactRequestDirection.RECEIVED;
 
 			//as of now this logic can't be utilized for checking for deleting the sent connection request
-			string cacheKey = $"Contacts_{reqdir}_{contactStatus}_{userID}";
+			string cacheKey = $"Contacts_{reqdir}_{contactStatus}_{_userID}";
 			List<Contact> contacts;
 
 			//if we dont find the object in cache then it will return null and typecasting the null will throw an exception

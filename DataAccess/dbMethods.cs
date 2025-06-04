@@ -11,7 +11,7 @@ using Microsoft.IdentityModel.Protocols;
 
 namespace DataAccess
 {
-	public static class dbMethods
+	public static class DBMethods
 	{
 		public static string _connectionString;
 		

@@ -19,5 +19,7 @@ namespace Common
 		public static readonly string UserHasPaid = " has paid the amount for split";
 		public static readonly string CloseSplit = "The split has been closed";
 		public static readonly string SplitCreated = "A Split has been created";
+		public static readonly string SplitRequestAccepted = " has accepted the split request";
+		public static readonly string SplitRequestRejected = " has rejected the split request";
 	}
 }

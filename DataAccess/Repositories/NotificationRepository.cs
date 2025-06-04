@@ -22,7 +22,7 @@ namespace DataAccess.Repositories
 				{ "NotificationText", notification.NotificationText },
 				{ "NotificationType", notification.NotificationType }
 			};
-			return Convert.ToInt32(DataAccess.dbMethods.DbUpdate("CreateNotification", parameters, true));
+			return Convert.ToInt32(DataAccess.DBMethods.DbUpdate("CreateNotification", parameters, true));
 		}
 
 		/// <summary>
@@ -38,7 +38,7 @@ namespace DataAccess.Repositories
 				{ "NotificationID", notificationID },
 				{ "NotifyFor", userID }
 			};
-			return (bool)DataAccess.dbMethods.DbUpdate("DeleteNotification", parameters);
+			return (bool)DataAccess.DBMethods.DbUpdate("DeleteNotification", parameters);
 		}
 
 		/// <summary>
@@ -52,7 +52,7 @@ namespace DataAccess.Repositories
 			{
 				{ "NotifyFor", userID }
 			};
-			return DataAccess.dbMethods.DbSelect<Notification>("GetNotifications", parameters, reader =>
+			return DataAccess.DBMethods.DbSelect<Notification>("GetNotifications", parameters, reader =>
 			{
 				return new Notification {
 					NotificationID = (int)reader["NotificationID"],

@@ -22,7 +22,7 @@ namespace DataAccess.Repositories
 				{ "FullName", user.FullName },
 				{ "PasswordHash", user.PasswordHash }
 			};
-			return (bool)DataAccess.dbMethods.DbUpdate("CreateUser", UserInfo);
+			return (bool)DataAccess.DBMethods.DbUpdate("CreateUser", UserInfo);
 		}
 
 		/// <summary>
@@ -36,7 +36,7 @@ namespace DataAccess.Repositories
 			{
 				{ "UserID", userID }
 			};
-			List<User> users = dbMethods.DbSelect("GetUserByID", UserInfo, reader =>
+			List<User> users = DBMethods.DbSelect("GetUserByID", UserInfo, reader =>
 			{
 				return new User {
 					UserID = (int)reader["UserID"],
@@ -61,7 +61,7 @@ namespace DataAccess.Repositories
 				{"UserName", userName}
 			};
 
-			List<User> users = dbMethods.DbSelect<User>("GetUserByUserName", UserInfo, reader =>
+			List<User> users = DBMethods.DbSelect<User>("GetUserByUserName", UserInfo, reader =>
 			{
 				return new User {
 					UserID = (int)reader["UserID"],
@@ -86,7 +86,7 @@ namespace DataAccess.Repositories
 			{
 				{ "UserID", userID }
 			};
-			return (bool)DataAccess.dbMethods.DbUpdate("DeleteUser", UserInfo);
+			return (bool)DataAccess.DBMethods.DbUpdate("DeleteUser", UserInfo);
 		}
 
 		/// <summary>
@@ -100,7 +100,7 @@ namespace DataAccess.Repositories
 			{
 				{ "UserID", userID }
 			};
-			List<string> users = dbMethods.DbSelect<string>("GetUserNameByID", UserInfo, reader =>
+			List<string> users = DBMethods.DbSelect<string>("GetUserNameByID", UserInfo, reader =>
 			{
 				return reader["UserName"].ToString();
 			});
@@ -118,7 +118,7 @@ namespace DataAccess.Repositories
 			{
 				{ "UserName", userName }
 			};
-			List<int> users = dbMethods.DbSelect<int>("GetUserIDByUserName", UserInfo, reader =>
+			List<int> users = DBMethods.DbSelect<int>("GetUserIDByUserName", UserInfo, reader =>
 			{
 				return (int)reader["UserID"];
 			});

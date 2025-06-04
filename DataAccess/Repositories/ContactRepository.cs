@@ -25,7 +25,7 @@ namespace DataAccess.Repositories
 				{ "UserID", userID },
 				{ "toUserName", toUserName }
 			};
-			return Convert.ToInt32(DataAccess.dbMethods.DbUpdate("CreateContact", parameters, true));
+			return Convert.ToInt32(DataAccess.DBMethods.DbUpdate("CreateContact", parameters, true));
 		}
 
 		/// <summary>
@@ -39,7 +39,7 @@ namespace DataAccess.Repositories
 			{
 				{ "ContactID", contactID }
 			};
-			return Convert.ToBoolean(DataAccess.dbMethods.DbUpdate("DeleteContact", parameters));
+			return Convert.ToBoolean(DataAccess.DBMethods.DbUpdate("DeleteContact", parameters));
 		}
 
 		/// <summary>
@@ -53,9 +53,9 @@ namespace DataAccess.Repositories
 			Dictionary<string, object> parameters = new Dictionary<string, object>
 			{
 				{ "UserID", userID },
-				{ "ContactStatus", contactStatus }
+				{ "ContactStatus", (int)contactStatus }
 			};
-			return DataAccess.dbMethods.DbSelect<ContactDto>("GetContacts", parameters, reader =>
+			return DataAccess.DBMethods.DbSelect<ContactDto>("GetContacts", parameters, reader =>
 			{
 				return new ContactDto {
 					UserData = new User {
@@ -90,7 +90,7 @@ namespace DataAccess.Repositories
 				{ "ContactID", contactID },
 				{ "ContactStatus", contactStatus }
 			};
-			return (int)DataAccess.dbMethods.DbUpdate("InteractContact", parameters, true);
+			return (int)DataAccess.DBMethods.DbUpdate("InteractContact", parameters, true);
 		}
 
 		/// <summary>

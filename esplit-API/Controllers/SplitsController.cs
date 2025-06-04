@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Common.Types;
 using Biz.Services;
+using Common.Utils;
 
 namespace esplit_API.Controllers
 {
@@ -10,16 +11,16 @@ namespace esplit_API.Controllers
 	public class SplitsController : ControllerBase
 	{
 		SplitsService splitService;
-		public SplitsController() 
+		public SplitsController(NotificationService _notifySerive, CacheService _cache, Identity _common) 
 		{ 
-			splitService = new SplitsService();
+			splitService = new SplitsService(_notifySerive, _cache, _common);
 		}
 
 		[HttpGet]
 		[Route("UserCreated")]
 		public IActionResult GetUserCreatedSplits(int userID)
 		{
-			List<SplitInfo> splits = splitService.GetSplits(userID, SplitStatus.OWNED);
+			List<SplitInfo> splits = splitService.GetSplits(SplitStatus.OWNED);
 			if (splits != null && splits.Count > 0)
 			{
 				return Ok(splits);
@@ -42,9 +43,9 @@ namespace esplit_API.Controllers
 
 		[HttpGet]
 		[Route("UserNonCreated")]
-		public IActionResult GetNonUserCreatedSplits(int userID)
+		public IActionResult GetNonUserCreatedSplits()
 		{
-			List<SplitInfo> splits = splitService.GetSplits(userID, SplitStatus.ALL);
+			List<SplitInfo> splits = splitService.GetSplits(SplitStatus.ALL);
 			if (splits != null && splits.Count > 0)
 			{
 				return Ok(splits);
@@ -100,10 +101,10 @@ namespace esplit_API.Controllers
 
 		[HttpPost]
 		[Route("EditSplit")]
-		public IActionResult EditSplit(int splitID, int userID,[FromBody] string splitStatus)
+		public IActionResult EditSplit(int splitID,[FromBody] string splitStatus)
 		{
 			//can edit split whole or just the interacted status, toggle split request from here
-			if(splitService.ToggleSplit(userID, splitID, splitStatus))
+			if(splitService.ToggleSplit(splitID, splitStatus))
 			{
 				return Ok();
 			}
@@ -114,10 +115,10 @@ namespace esplit_API.Controllers
 		}
 
 		[HttpDelete]
-		public IActionResult CloseSplit(int userID, int splitID)
+		public IActionResult CloseSplit(int splitID)
 		{
 			//not delete, but set split status to close
-			if(splitService.MarkClosed(userID, splitID))
+			if(splitService.MarkClosed(splitID))
 			{
 				return Ok();
 			}
@@ -129,10 +130,10 @@ namespace esplit_API.Controllers
 
 		[HttpPost]
 		[Route("PayDue")]
-		public IActionResult PayDues(int splitID, int userID)
+		public IActionResult PayDues(int splitID)
 		{
 			
-			if(splitService.PayDue(splitID, userID))
+			if(splitService.PayDue(splitID))
 			{
 				return Ok();
 			}
