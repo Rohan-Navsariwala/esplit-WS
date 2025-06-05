@@ -34,6 +34,7 @@ namespace esplit_API.Controllers
 			}
 		}
 
+		[Authorize]
 		[HttpDelete("{contactID}")]
 		public IActionResult DeleteContact(int contactID)
 		{
@@ -50,7 +51,7 @@ namespace esplit_API.Controllers
 		[Authorize]
 		[HttpPost]
 		[Route("CreateConnection")]
-		public IActionResult CreateContact(string toUserName)
+		public IActionResult CreateContact([FromBody]string toUserName)
 		{
 			bool contact = contactService.CreateContact(toUserName);
 			if (contact != null)
@@ -64,9 +65,10 @@ namespace esplit_API.Controllers
 			}
 		}
 
-		[HttpPost]
+		[Authorize]
+		[HttpPatch]
 		[Route("InteractConnectionRequest")]
-		public IActionResult InteractContactRequest(int contactID, string contactStatus)
+		public IActionResult InteractContactRequest([FromBody]int contactID, string contactStatus)
 		{
 			ContactStatus status = (ContactStatus)Enum.Parse(typeof(ContactStatus), contactStatus);
 

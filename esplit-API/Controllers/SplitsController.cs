@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Common.Types;
 using Biz.Services;
 using Common.Utils;
+using Microsoft.AspNetCore.Authorization;
 
 namespace esplit_API.Controllers
 {
@@ -16,9 +17,10 @@ namespace esplit_API.Controllers
 			splitService = new SplitsService(_notifySerive, _cache, _common);
 		}
 
+		[Authorize]
 		[HttpGet]
-		[Route("UserCreated")]
-		public IActionResult GetUserCreatedSplits(int userID)
+		[Route("UserCreatedSplits")]
+		public IActionResult GetUserCreatedSplits()
 		{
 			List<SplitInfo> splits = splitService.GetSplits(SplitStatus.OWNED);
 			if (splits != null && splits.Count > 0)
@@ -41,9 +43,10 @@ namespace esplit_API.Controllers
 		//	return new List<Split>();
 		//}
 
+		[Authorize]
 		[HttpGet]
-		[Route("UserNonCreated")]
-		public IActionResult GetNonUserCreatedSplits()
+		[Route("UserInvolvedSplits")]
+		public IActionResult GetUserInvolvedSplits()
 		{
 			List<SplitInfo> splits = splitService.GetSplits(SplitStatus.ALL);
 			if (splits != null && splits.Count > 0)
@@ -56,9 +59,10 @@ namespace esplit_API.Controllers
 			}
 		}
 
-		[HttpGet]
-		[Route("GetSplitParticipants")]
-		public IActionResult GetSplitParticipants(int splitID)
+		[Authorize]
+		[HttpPost]
+		[Route("SplitParticipants")]
+		public IActionResult GetSplitParticipants([FromBody]int splitID)
 		{
 			List<ParticipantDto> splitContacts = splitService.GetParticipants(splitID);
 			if(splitContacts != null  && splitContacts.Count > 0)
@@ -72,9 +76,10 @@ namespace esplit_API.Controllers
 
 		}
 
-		[HttpGet]
+		[Authorize]
+		[HttpPost]
 		[Route("AddSplitParticipant")]
-		public IActionResult AddSplitParticipant(SplitContact contact)
+		public IActionResult AddSplitParticipant([FromBody]SplitContact contact)
 		{
 			if(splitService.AddSplitParticipant(contact))
 			{
@@ -86,8 +91,9 @@ namespace esplit_API.Controllers
 			}
 		}
 
+		[Authorize]
 		[HttpPost]
-		public IActionResult CreateSplit(Split split)
+		public IActionResult CreateSplit([FromBody]Split split)
 		{
 			if (splitService.CreateSplit(split))
 			{
@@ -99,9 +105,10 @@ namespace esplit_API.Controllers
 			}
 		}
 
-		[HttpPost]
+		[Authorize]
+		[HttpPatch]
 		[Route("EditSplit")]
-		public IActionResult EditSplit(int splitID,[FromBody] string splitStatus)
+		public IActionResult EditSplit(int splitID, [FromBody]string splitStatus)
 		{
 			//can edit split whole or just the interacted status, toggle split request from here
 			if(splitService.ToggleSplit(splitID, splitStatus))
@@ -114,32 +121,34 @@ namespace esplit_API.Controllers
 			}
 		}
 
+		[Authorize]
 		[HttpDelete]
 		public IActionResult CloseSplit(int splitID)
 		{
 			//not delete, but set split status to close
 			if(splitService.MarkClosed(splitID))
 			{
-				return Ok();
+				return Ok("Split Closed");
 			}
 			else
 			{
-				return BadRequest();
+				return BadRequest("Unable to close the split");
 			}
 		}
 
-		[HttpPost]
-		[Route("PayDue")]
+		[Authorize]
+		[HttpPatch]
+		[Route("PayDue/{splitID}")]
 		public IActionResult PayDues(int splitID)
 		{
 			
 			if(splitService.PayDue(splitID))
 			{
-				return Ok();
+				return Ok("Marked Payment as Done");
 			}
 			else
 			{
-				return BadRequest();
+				return BadRequest("Unable to mark done");
 			}
 		}
 	}

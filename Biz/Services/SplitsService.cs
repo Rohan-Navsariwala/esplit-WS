@@ -3,9 +3,14 @@ using Common.Types;
 using Common;
 using static Azure.Core.HttpHeader;
 using Common.Utils;
+using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
 
 namespace Biz.Services
 {
+	//- handle response for get user involved split when there is no incoming splits available
+	//- for close split(it wont work if the cache is not populated, i.e.get owned splits not run already)
+	//- for edit and pay due some null reference exception is thrown
 	public class SplitsService
 	{
 		private readonly SplitRepository splitRepository;
@@ -43,15 +48,31 @@ namespace Biz.Services
 
 		public bool CreateSplit(Split split)
 		{
+			split.Info.CreatedBy = _userID;
 			int splitID = splitRepository.CreateSplit(split.Info);
 
 			if (splitID > 0)
 			{
 				//as we have to update the cache for new split created, which will be utilized in the further process of adding participants
 				string cacheKey = $"Split_{SplitStatus.OWNED}_{_userID}";
-				List<SplitInfo> splits = (List<SplitInfo>)_cache.GetFromCache(cacheKey);
+				List<SplitInfo> splits;
+				try
+				{
+					splits = (List<SplitInfo>)_cache.GetFromCache(cacheKey);
+
+				}
+				catch (Exception ex)
+				{
+					Console.WriteLine(ex); //there has to be better way to handle this exception
+				}
+				finally
+				{
+					splits = new List<SplitInfo>();
+				}
+				split.Info.SplitID = splitID;
 				splits.Add(split.Info);
 				_cache.InsertIntoCache(cacheKey, splits);
+
 
 				foreach (SplitContact contact in split.Contacts)
 				{
@@ -74,7 +95,7 @@ namespace Biz.Services
 		public bool AddSplitParticipant(SplitContact splitContact)
 		{
 			if (IsOperationAllowed(splitContact.SplitID, SplitStatus.OWNED))
-			{
+			{ //here we need one more check about if user is allowed to add that contact person or not // maybe we can utilize the is operation allowed method from contacts already
 				if (splitRepository.AddSplitParticipant(splitContact))
 				{
 					Notification notification = new Notification()
@@ -122,7 +143,7 @@ namespace Biz.Services
 		{	//we still have a vulnerability here of performing status change operation with togglesplit even after paydue since the cache is not updated for removing the split from the list, but that is not high priority and i'll do it later
 			if (IsOperationAllowed(splitID, SplitStatus.ALL))
 			{
-				if (splitRepository.PayDue(_userID, splitID))
+				if (splitRepository.PayDue(_userID, splitID)) //we can also accomodate this to return split owner id
 				{
 					Notification notification = new Notification()
 					{
@@ -153,7 +174,7 @@ namespace Biz.Services
 			if(IsOperationAllowed(splitID, SplitStatus.ALL))
 			{
 
-				if(splitRepository.ToggleSplit(_userID, splitID, status))
+				if(splitRepository.ToggleSplit(_userID, splitID, status)) //we can make this return the id of split owner
 				{
 					Notification notification = new Notification()
 					{
@@ -225,7 +246,7 @@ namespace Biz.Services
 				splits = _cache.InsertIntoCache(cacheKey, splitRepository.GetSplits(_userID, status));
 			}
 
-			if(splits.Find(s => s.SplitID == SplitID) != null)
+			if(splits?.Find(s => s.SplitID == SplitID) != null)
 			{
 				return true;
 			} 

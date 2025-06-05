@@ -22,7 +22,7 @@ namespace Biz.Services
 
 		public T InsertIntoCache<T>(string key, T value)
 		{
-			return _cache.Set<T>(key, value, TimeSpan.FromMinutes(5));
+			return _cache.Set<T>(key, value, TimeSpan.FromMinutes(15));
 		}
 	}
 }

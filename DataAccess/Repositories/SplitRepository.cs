@@ -49,7 +49,7 @@ namespace DataAccess.Repositories
 			{
 				{ "SplitID", splitID }
 			};
-			return DataAccess.DBMethods.DbSelect<ParticipantDto>("GetSplitParticipant", parameters, reader =>
+			return DataAccess.DBMethods.DbSelect<ParticipantDto>("GetSplitParticipants", parameters, reader =>
 			{
 				return new ParticipantDto {
 					SplitParticipant = new SplitContact {
@@ -57,7 +57,7 @@ namespace DataAccess.Repositories
 						SplitParticipantID = (int)reader["SplitParticipantID"],
 						OweAmount = (decimal)reader["OweAmount"],
 						SplitStatus = (SplitStatus)reader["SplitStatus"],
-						StatusUpdateOn = Convert.ToDateTime(reader["StatusUpdateOn"]), //this will give datetime null
+						StatusUpdateOn = reader["StatusUpdateOn"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["StatusUpdateOn"]),
 					},
 					UserData = new User {
 						UserID = (int)reader["UserID"],
@@ -75,7 +75,7 @@ namespace DataAccess.Repositories
 			Dictionary<string, object> parameters = new Dictionary<string, object>()
 			{
 				{ "UserID", userID },
-				{ "SplitStatus", splitStatus }
+				{ "SplitStatus", (int)splitStatus }
 			};
 			return DataAccess.DBMethods.DbSelect<SplitInfo>("GetSplits", parameters, reader =>
 			{
@@ -85,7 +85,7 @@ namespace DataAccess.Repositories
 					SplitAmount = (decimal)reader["SplitAmount"],
 					SplitDescription = reader["SplitDescription"].ToString(),
 					CreatedOn = Convert.ToDateTime(reader["CreatedOn"]),
-					UpdatedOn = Convert.ToDateTime(reader["UpdatedOn"]), //this will give datetime null
+					UpdatedOn = reader["UpdatedOn"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["UpdatedOn"]),
 					IsClosed = Convert.ToBoolean(reader["IsClosed"]),
 				};
 			});
@@ -107,7 +107,7 @@ namespace DataAccess.Repositories
 			{
 				{ "UserID", userID },
 				{ "SplitID", splitID },
-				{ "SplitStatus", splitStatus }
+				{ "SplitStatus", (int)splitStatus }
 			};
 			return (bool)DataAccess.DBMethods.DbUpdate("ToggleSplit", parameters);
 		}

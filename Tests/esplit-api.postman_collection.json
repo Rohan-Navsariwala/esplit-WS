@@ -1,0 +1,511 @@
+{
+  "info": {
+    "name": "esplit_API",
+    "_postman_id": "e3a5e3e6-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+    "description": "Auto-generated Postman collection for esplit_API controllers",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://localhost:7131/api",
+      "type": "string"
+    },
+    {
+      "key": "Authorization",
+      "value": "YOUR_BEARER_TOKEN_HERE",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "GetUser",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/Users/:user",
+              "host": ["{{baseUrl}}"],
+              "path": ["Users", ":user"]
+            }
+          }
+        },
+        {
+          "name": "DeleteAccount",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/Users",
+              "host": ["{{baseUrl}}"],
+              "path": ["Users"]
+            }
+          }
+        },
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"UserID\": 0,\n  \"UserName\": \"string\",\n  \"Password\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Users",
+              "host": ["{{baseUrl}}"],
+              "path": ["Users"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"UserName\": \"string\",\n  \"Password\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Users/auth",
+              "host": ["{{baseUrl}}"],
+              "path": ["Users", "auth"]
+            }
+          }
+        },
+        {
+          "name": "Test",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/Users/Test",
+              "host": ["{{baseUrl}}"],
+              "path": ["Users", "Test"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Contacts",
+      "item": [
+        {
+          "name": "GetContacts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/Contacts?contactStatus=APPROVED",
+              "host": ["{{baseUrl}}"],
+              "path": ["Contacts"],
+              "query": [
+                {
+                  "key": "contactStatus",
+                  "value": "APPROVED"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "DeleteContact",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/Contacts/:contactID",
+              "host": ["{{baseUrl}}"],
+              "path": ["Contacts", ":contactID"]
+            }
+          }
+        },
+        {
+          "name": "CreateContact",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\"string_toUserName\"",
+              "options": {
+                "raw": {
+                  "language": "text"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Contacts/CreateConnection",
+              "host": ["{{baseUrl}}"],
+              "path": ["Contacts", "CreateConnection"]
+            }
+          }
+        },
+        {
+          "name": "InteractContactRequest",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "123",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Contacts/InteractConnectionRequest?contactStatus=APPROVED",
+              "host": ["{{baseUrl}}"],
+              "path": ["Contacts", "InteractConnectionRequest"],
+              "query": [
+                {
+                  "key": "contactStatus",
+                  "value": "APPROVED"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GetContactRequests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/Contacts/GetConnectionRequests?actionType=RECEIVED&contactStatus=PENDING",
+              "host": ["{{baseUrl}}"],
+              "path": ["Contacts", "GetConnectionRequests"],
+              "query": [
+                {
+                  "key": "actionType",
+                  "value": "RECEIVED"
+                },
+                {
+                  "key": "contactStatus",
+                  "value": "PENDING"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Splits",
+      "item": [
+        {
+          "name": "GetUserCreatedSplits",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/Splits/UserCreatedSplits",
+              "host": ["{{baseUrl}}"],
+              "path": ["Splits", "UserCreatedSplits"]
+            }
+          }
+        },
+        {
+          "name": "GetUserInvolvedSplits",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/Splits/UserInvolvedSplits",
+              "host": ["{{baseUrl}}"],
+              "path": ["Splits", "UserInvolvedSplits"]
+            }
+          }
+        },
+        {
+          "name": "GetSplitParticipants",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "123",
+              "options": {
+                "raw": {
+                  "language": "text"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Splits/SplitParticipants",
+              "host": ["{{baseUrl}}"],
+              "path": ["Splits", "SplitParticipants"]
+            }
+          }
+        },
+        {
+          "name": "AddSplitParticipant",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"here we have to add split participant object\": 0,\n  \"UserID\": 0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Splits/AddSplitParticipant",
+              "host": ["{{baseUrl}}"],
+              "path": ["Splits", "AddSplitParticipant"]
+            }
+          }
+        },
+        {
+          "name": "CreateSplit",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"here we have to add split info object\": \"string\",\n  \"SplitAmount\": 0.0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Splits",
+              "host": ["{{baseUrl}}"],
+              "path": ["Splits"]
+            }
+          }
+        },
+        {
+          "name": "EditSplit",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "\"NEW_STATUS\"",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Splits/EditSplit?splitID=123",
+              "host": ["{{baseUrl}}"],
+              "path": ["Splits", "EditSplit"],
+              "query": [
+                {
+                  "key": "splitID",
+                  "value": "123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "CloseSplit",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/Splits?splitID=123",
+              "host": ["{{baseUrl}}"],
+              "path": ["Splits"],
+              "query": [
+                {
+                  "key": "splitID",
+                  "value": "123"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "PayDues",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/Splits/PayDue/123",
+              "host": ["{{baseUrl}}"],
+              "path": ["Splits", "PayDue", "123"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "GetNotifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/Notifications",
+              "host": ["{{baseUrl}}"],
+              "path": ["Notifications"]
+            }
+          }
+        },
+        {
+          "name": "DeleteNotification",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{authToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/Notifications/:notificationId",
+              "host": ["{{baseUrl}}"],
+              "path": ["Notifications", ":notificationId"]
+            }
+          }
+        },
+        {
+          "name": "CreateNotification",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"NotificationType\": 1,\n  \"NotifyFor\": 0,\n  \"ActionPerformedBy\": \"string\",\n  \"NotificationText\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/Notifications",
+              "host": ["{{baseUrl}}"],
+              "path": ["Notifications"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

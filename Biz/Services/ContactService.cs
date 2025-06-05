@@ -5,6 +5,8 @@ using DataAccess.Repositories;
 
 namespace Biz.Services
 {
+	//	- delete contact won't work(throws exception) if the cache is not populated (i.e. delete gets executed before get contact)
+	//- same issue for interact request( if get requests has not called before then cache won't be populated yet)
 	public class ContactService
 	{
 		private readonly ContactRepository contactRepo;
@@ -121,10 +123,10 @@ namespace Biz.Services
 				if (affectedUser > 0)
 				{
 					Notification notification = new Notification() {
-						NotifyFor = 1,
+						NotifyFor = affectedUser,
 						ActionPerformedBy = "",
-						NotificationText = contactStatus == ContactStatus.APPROVED
-							? NotificationText.ConnectionAccepted : NotificationText.ConnectionRejected,
+						NotificationText = (contactStatus == ContactStatus.APPROVED
+							? NotificationText.ConnectionAccepted : NotificationText.ConnectionRejected) + affectedUser,
 						NotificationType = contactStatus == ContactStatus.APPROVED
 							? NotificationType.CONNECTION_ACCEPTED : NotificationType.CONNECTION_REJECTED
 					};
@@ -159,12 +161,12 @@ namespace Biz.Services
 
 			//as of now this logic can't be utilized for checking for deleting the sent connection request
 			string cacheKey = $"Contacts_{reqdir}_{contactStatus}_{_userID}";
-			List<Contact> contacts;
+			List<ContactDto> contacts;
 
 			//if we dont find the object in cache then it will return null and typecasting the null will throw an exception
 			try
 			{
-				contacts = (List<Contact>)_cache.GetFromCache(cacheKey);
+				contacts = (List<ContactDto>)_cache.GetFromCache(cacheKey);
 			}
 			catch (Exception ex)
 			{
@@ -173,7 +175,7 @@ namespace Biz.Services
 				return false;
 			}
 
-			if(contacts.Find(c => c.ContactID == ContactID) != default(Contact))
+			if(contacts.Find(c => c.ContactData.ContactID == ContactID) != default(ContactDto))
 			{
 				return true;
 			}

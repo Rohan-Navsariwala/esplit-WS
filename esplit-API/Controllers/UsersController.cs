@@ -26,6 +26,11 @@ namespace esplit_API.Controllers
 			_commonMethods = commonMethods;
 		}
 
+		/// <summary>
+		/// this endpoint is only for testing purposes, as of now, when ajax is added into frontend then it will be utilized
+		/// </summary>
+		/// <param name="user"></param>
+		/// <returns></returns>
 		[HttpGet("{user}")]
 		public IActionResult GetUser(string user)
 		{
@@ -68,7 +73,7 @@ namespace esplit_API.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult Register(User user)
+		public IActionResult Register([FromBody]User user)
 		{
 			UserService userService = new UserService();
 			if (userService.RegisterUser(user))
@@ -83,15 +88,15 @@ namespace esplit_API.Controllers
 
 		[HttpPost]
 		[Route("auth")]
-		public IActionResult Login(string userName, string password)
+		public IActionResult Login([FromBody]LoginModel credentials)
 		{
 			UserService userService = new UserService();
-			User userData = userService.Authenticate(userName, password);
+			User userData = userService.Authenticate(credentials.UserName, credentials.Password);
 			if(userData != null)
 			{
 				var claims = new[]
 				{
-					new Claim("name", userName),
+					new Claim("name", credentials.UserName),
 					new Claim("uid", userData.UserID.ToString())
 				};
 
@@ -121,5 +126,11 @@ namespace esplit_API.Controllers
 			(string userName, int userID) = _commonMethods.GetClaims();
 			return Ok(new { userID, userName });
 		}
+	}
+
+	public class LoginModel
+	{
+		public string UserName { get; set; }
+		public string Password { get; set; }
 	}
 }

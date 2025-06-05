@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Common.Types;
 using Biz.Services;
+using Microsoft.AspNetCore.Authorization;
+using Common.Utils;
 
 namespace esplit_API.Controllers
 {
@@ -10,30 +12,32 @@ namespace esplit_API.Controllers
 	public class NotificationsController : ControllerBase
 	{
 		private readonly NotificationService _notificationService;
-		public NotificationsController() 
+		public NotificationsController(Identity common) 
 		{
-			_notificationService = new NotificationService();
+			_notificationService = new NotificationService(common);
 		}
 
+		[Authorize]
 		[HttpGet]
-		public IActionResult GetNotifications(int userID)
+		public IActionResult GetNotifications()
 		{
 			//auth checks
-			List<Notification> notifications = _notificationService.GetNotifications(userID);
+			List<Notification> notifications = _notificationService.GetNotifications();
 			if (notifications != null && notifications.Count > 0)
 			{
 				return Ok(notifications);
 			}
 			else
 			{
-				return NotFound("No notifications found for the given user.");
+				return NotFound("No notifications found");
 			}
 		}
 
-		[HttpDelete("{userID}/{notificationId}")]
-		public IActionResult DeleteNotification(int userID,int notificationId)
+		[Authorize]
+		[HttpDelete("{notificationId}")]
+		public IActionResult DeleteNotification(int notificationId)
 		{
-			if(_notificationService.DeleteNotification(notificationId, userID))
+			if(_notificationService.DeleteNotification(notificationId))
 			{
 				return Ok("Notification deleted successfully.");
 			}
