@@ -1,0 +1,48 @@
+﻿@{
+}
+<div class="modal fade" id="contactStatusModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-scrollable">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modalLabel">Contact Status</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+
+			<div class="modal-body">
+				<p><strong>Split ID:</strong> {{ splitId }}</p>
+				<p><strong>Title:</strong> {{ splitTitle }}</p>
+
+				<table class="table table-bordered">
+					<thead class="table-light">
+						<tr>
+							<th>Participant</th>
+							<th>Has Approved</th>
+							<th>Has Paid</th>
+							<th>Due Amount (₹)</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let p of participants">
+							<td>{{ p.Participant }}</td>
+							<td>
+								<span [class]="p.HasApproved ? 'text-success' : 'text-danger'">
+									{{ p.HasApproved ? 'Yes' : 'No' }}
+								</span>
+							</td>
+							<td>
+								<span [class]="p.HasPaid ? 'text-success' : 'text-danger'">
+									{{ p.HasPaid ? 'Yes' : 'No' }}
+								</span>
+							</td>
+							<td>{{ p.DueAmount }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="modal-footer">
+				<button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>

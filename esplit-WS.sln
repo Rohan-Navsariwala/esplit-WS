@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Biz", "Biz\Biz.csproj", "{6
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{5B2365BD-1207-4C77-B0CF-B77FAAA9FFA2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "esplit-site", "esplit-site\esplit-site.csproj", "{507F82BC-CC13-444B-ADB6-B8588E73817F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{5B2365BD-1207-4C77-B0CF-B77FAAA9FFA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B2365BD-1207-4C77-B0CF-B77FAAA9FFA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B2365BD-1207-4C77-B0CF-B77FAAA9FFA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{507F82BC-CC13-444B-ADB6-B8588E73817F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{507F82BC-CC13-444B-ADB6-B8588E73817F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{507F82BC-CC13-444B-ADB6-B8588E73817F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{507F82BC-CC13-444B-ADB6-B8588E73817F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,20 @@
+﻿@{
+	ViewData["title"] = "Contacts | esplit";
+}
+
+<div class="container mt-5">
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<div>
+			<button class="btn btn-danger me-2" (click)="toggleDeleteMode()">
+				{{ deleteMode ? 'Cancel Delete' : 'Delete' }}
+			</button>
+			<button class="btn btn-success" (click)="addContact()">
+				Add
+			</button>
+		</div>
+	</div>
+
+	<div class="list-group">
+		<!--here iterate through contacts template-->
+	</div>
+</div>
