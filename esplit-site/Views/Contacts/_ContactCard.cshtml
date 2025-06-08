@@ -1,13 +1,17 @@
 ﻿@{
 }
+
+@using Common.Types;
+@model ContactDto
+
 <div class="list-group-item d-flex justify-content-between align-items-center">
 	<div class="d-flex align-items-center">
 		<div *ngIf="deleteMode" class="form-check me-3">
 			<input type="checkbox" class="form-check-input">
 		</div>
 		<div>
-			<h6 class="mb-0">{{ contact.name }}</h6>
-			<small class="text-muted">{{ contact.username }}</small>
+			<h6 class="mb-0">@Model.UserData.FullName</h6>
+			<small class="text-muted">@Model.UserData.UserName</small>
 		</div>
 	</div>
 </div>

@@ -1,0 +1,12 @@
+﻿@{
+	ViewData["title"] = "Notifications | esplit";
+}
+@using Common.Types;
+@model List<Notification>;
+
+<div class="list-group">
+	@foreach(Notification n in Model)
+	{
+		@await Html.PartialAsync("_NotifyCard", n);
+	}
+</div>

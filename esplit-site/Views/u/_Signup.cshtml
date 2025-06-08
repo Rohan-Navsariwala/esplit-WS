@@ -3,23 +3,23 @@
 
 <div>
 	<h3 class="mb-4">Sign Up</h3>
-	<form>
+	<form asp-controller="u" asp-action="SignupPost" method="post">
 		<div class="mb-3">
-			<label for="signupName" class="form-label">Full Name</label>
-			<input type="text" class="form-control" id="signupName" placeholder="John Doe">
+			<label for="UserName" class="form-label">Username</label>
+			<input type="text" class="form-control" id="UserName" name="UserName" placeholder="Enter Username">
 		</div>
 		<div class="mb-3">
-			<label for="signupEmail" class="form-label">Email address</label>
-			<input type="email" class="form-control" id="signupEmail" placeholder="Enter email">
+			<label for="FullName" class="form-label">Full Name</label>
+			<input type="text" class="form-control" id="FullName" name="FullName" placeholder="John Doe">
 		</div>
 		<div class="mb-3">
-			<label for="signupPassword" class="form-label">Password</label>
-			<input type="password" class="form-control" id="signupPassword" placeholder="Password">
+			<label for="PasswordHash" class="form-label">Password</label>
+			<input type="password" class="form-control" id="PasswordHash" name="PasswordHash" placeholder="Password">
 		</div>
 		<button type="submit" class="btn btn-success w-100">Sign Up</button>
 	</form>
 	<p class="text-center mt-3">
 		Already have an account?
-		<a routerLink="/login">Login</a>
+		<a href="/u/Login">Login</a>
 	</p>
 </div>

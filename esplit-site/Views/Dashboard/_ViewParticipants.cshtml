@@ -1,6 +1,10 @@
 ﻿@{
 }
-<div class="modal fade" id="contactStatusModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+
+@using Common.Types;
+@model List<ParticipantDto>
+
+<div class="modal fade" id="contactStatusModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="false">
 	<div class="modal-dialog modal-lg modal-dialog-scrollable">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -9,7 +13,7 @@
 			</div>
 
 			<div class="modal-body">
-				<p><strong>Split ID:</strong> {{ splitId }}</p>
+				<p><strong>Split ID:</strong> @Model[0]?.SplitParticipant.SplitID </p>
 				<p><strong>Title:</strong> {{ splitTitle }}</p>
 
 				<table class="table table-bordered">
@@ -22,20 +26,24 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr *ngFor="let p of participants">
-							<td>{{ p.Participant }}</td>
+						@foreach(ParticipantDto p in Model)
+						{
+							
+						<tr>
+							<td> @p.SplitParticipant.SplitParticipantID - @p.UserData.UserName </td>
 							<td>
-								<span [class]="p.HasApproved ? 'text-success' : 'text-danger'">
-									{{ p.HasApproved ? 'Yes' : 'No' }}
+								<span class="@(p.SplitParticipant.SplitStatus == SplitStatus.APPROVED_UNPAID ? "text-success" : "text-danger")">
+									@(p.SplitParticipant.SplitStatus == SplitStatus.APPROVED_UNPAID  ? "Yes" : "No")
 								</span>
 							</td>
 							<td>
-								<span [class]="p.HasPaid ? 'text-success' : 'text-danger'">
-									{{ p.HasPaid ? 'Yes' : 'No' }}
+									<span class="@(p.SplitParticipant.SplitStatus == SplitStatus.PAID ? "text-success" : "text-danger")">
+									@(p.SplitParticipant.SplitStatus == SplitStatus.PAID ? "Yes" : "No")
 								</span>
 							</td>
-							<td>{{ p.DueAmount }}</td>
+							<td>@p.SplitParticipant.OweAmount</td>
 						</tr>
+						}
 					</tbody>
 				</table>
 			</div>

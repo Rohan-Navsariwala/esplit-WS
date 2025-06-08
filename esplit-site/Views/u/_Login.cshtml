@@ -2,20 +2,20 @@
 }
 
 <div>
-	<h3 class="mb-4">Sign In</h3>
-	<form>
+	<h3 class="mb-4">Log In</h3>
+	<form asp-controller="u" asp-action="LoginPost" method="post">
 		<div class="mb-3">
-			<label for="signinEmail" class="form-label">Email address</label>
-			<input type="email" class="form-control" id="signinEmail" placeholder="Enter email">
+			<label for="UserName" class="form-label">Username</label>
+			<input type="text" class="form-control" id="UserName" name="UserName" placeholder="Enter username">
 		</div>
 		<div class="mb-3">
-			<label for="signinPassword" class="form-label">Password</label>
-			<input type="password" class="form-control" id="signinPassword" placeholder="Password">
+			<label for="PasswordHash" class="form-label">Password</label>
+			<input type="password" class="form-control" id="PasswordHash" name="PasswordHash" placeholder="Password">
 		</div>
 		<button type="submit" class="btn btn-primary w-100">Sign In</button>
 	</form>
 	<p class="text-center mt-3">
 		Don't have an account?
-		<a routerLink="/signup">Sign Up</a>
+		<a href="/u/Signup">Sign Up</a>
 	</p>
 </div>

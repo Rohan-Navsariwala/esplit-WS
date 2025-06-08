@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@{
+    // string routerpath = ViewBag.RequestPath;
+    // routerpath = routerpath.Split("/")[1];
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -30,7 +35,10 @@
                         <a class="nav-link" asp-area="" asp-controller="Contacts" asp-action="Index">Contacts</a>
                     </li>
                 </ul>
-                <button class="btn btn-outline-light" onclick="signOut()">Sign Out</button>
+                @* @if (routerpath != "u") *@
+                {
+                    <button class="btn btn-outline-light" onclick="signOut()">Sign Out</button>
+                }
             </div>
         </nav>
     </header>
