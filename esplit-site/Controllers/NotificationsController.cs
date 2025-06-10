@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace esplit_site.Controllers
 {
+	[Route("{controller}")]
 	public class NotificationsController : Controller
 	{
 		private NotificationService notifyService;
@@ -24,7 +25,6 @@ namespace esplit_site.Controllers
 
 		[Authorize]
 		[HttpDelete]
-		[Route("DeleteNotification")]
 		public IActionResult Delete(int NotificationID)
 		{
 			if (notifyService.DeleteNotification(NotificationID))
@@ -35,5 +35,6 @@ namespace esplit_site.Controllers
 			{
 				return BadRequest(new { success = false, message = "Failed to delete notification." });
 			}
+		}
 	}
 }

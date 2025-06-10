@@ -85,7 +85,7 @@ function paySplit(SplitID) {
 function deleteNotification(NotificationID) {
 	console.log("delete notification " + NotificationID)
 	$.ajax({
-		url: "/Notifications?NotificationID" + NotificationID,
+		url: "/Notifications?NotificationID=" + NotificationID,
 		type: "DELETE",
 		success: function (resopnse) {
 
@@ -96,16 +96,21 @@ function deleteNotification(NotificationID) {
 	});
 }
 
-function addContact(toUserName) {
+function SendContactRequest() {
+	let toUserName = $("#toUserName").Value
 	console.log("contact req" + toUserName)
-	$.ajax({
-		url: "/Contacts/AddContact?toUserName=" + toUserName,
-		type: "POST",
-		success: function (resopnse) {
+	if (toUserName != "") {
+		$.ajax({
+			url: "/Contacts/AddContact?toUserName=" + toUserName,
+			type: "POST",
+			success: function (resopnse) {
 
-		},
-		error: function (error) {
+			},
+			error: function (error) {
 
-		}
-	});
+			}
+		});
+	} else {
+		console.log("bro fill the input field")
+	}
 }
