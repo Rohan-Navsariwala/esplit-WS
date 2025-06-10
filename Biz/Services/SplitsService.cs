@@ -73,12 +73,14 @@ namespace Biz.Services
 				splits.Add(split.Info);
 				_cache.InsertIntoCache(cacheKey, splits);
 
-
-				foreach (SplitContact contact in split.Contacts)
-				{
-					contact.SplitID = splitID;
-					contact.SplitStatus = SplitStatus.PENDING_APPROVAL;
-					AddSplitParticipant(contact);
+				if (split.Contacts.Count > 0) 
+				{ 
+					foreach (SplitContact contact in split.Contacts)
+					{
+						contact.SplitID = splitID;
+						contact.SplitStatus = SplitStatus.PENDING_APPROVAL;
+						AddSplitParticipant(contact);
+					}
 				}
 			}
 

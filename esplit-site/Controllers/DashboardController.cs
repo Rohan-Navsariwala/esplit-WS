@@ -19,7 +19,9 @@ namespace esplit_site.Controllers
 		{
 			List<List<SplitInfo>> splits = new List<List<SplitInfo>>();
 			splits.Add(_splitService.GetSplits(SplitStatus.OWNED));
-			splits.Add(_splitService.GetSplits(SplitStatus.ALL));
+			List<SplitInfo> allSplits = _splitService.GetSplits(SplitStatus.ALL);
+			splits.Add(allSplits.Where(s => s.SplitParticipantStatus == SplitStatus.PENDING_APPROVAL).ToList());
+			splits.Add(allSplits.Where(s => s.SplitParticipantStatus == SplitStatus.APPROVED_UNPAID).ToList());
 
 			return View(splits);
 		}

@@ -19,7 +19,7 @@
 					</div>
 				</div>
 
-				<div class="card-body">
+				<div class="card-body" id="OwnedSplits">
 					<!-- Section 2: List of created splits -->
 					<!--here we loop through partial view-->
 					@foreach(SplitInfo s in Model[0])
@@ -38,7 +38,7 @@
 				<div class="card-header bg-warning">
 					<h5 class="mb-0">Split Requests</h5>
 				</div>
-				<div class="card-body">
+				<div class="card-body" id="RequestedSplits">
 					<!--here we loop through partial view-->
 					@foreach (SplitInfo s in Model[1])
 					{
@@ -52,8 +52,12 @@
 				<div class="card-header bg-danger text-white">
 					<h5 class="mb-0">My Due Splits</h5>
 				</div>
-				<div class="card-body">
+				<div class="card-body" id="DueSplits">
 					<!--here we loop through partial view-->
+					@foreach (SplitInfo s in Model[2])
+					{
+						@await Html.PartialAsync("_SplitCard", s);
+					}
 				</div>
 			</div>
 

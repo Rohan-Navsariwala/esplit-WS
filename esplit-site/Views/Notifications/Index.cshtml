@@ -4,7 +4,7 @@
 @using Common.Types;
 @model List<Notification>;
 
-<div class="list-group">
+<div class="list-group mt-4">
 	@foreach(Notification n in Model)
 	{
 		@await Html.PartialAsync("_NotifyCard", n);
