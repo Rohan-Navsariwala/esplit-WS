@@ -31,6 +31,7 @@ namespace esplit_site.Controllers
 		}
 
 		//this is gonna return the dialogue box of participants of specific split
+		[Authorize]
 		[HttpGet]
 		public IActionResult SplitParticipants(int splitid)
 		{
@@ -38,29 +39,79 @@ namespace esplit_site.Controllers
 			return PartialView("_ViewParticipants", participants);
 		}
 
-		public IActionResult AddParticipant()
+		[Authorize]
+		[HttpPost]
+		[Route("AddParticipant")]
+		public IActionResult AddParticipant(SplitContact participant)
 		{
-			return View();
+			if (_splitService.AddSplitParticipant(participant))
+			{
+				return Ok(new { success = true, message = "Participant added successfully." });
+			}
+			else
+			{
+				return BadRequest(new { success = false, message = "Failed to add participant." });
+			}
 		}
 
-		public IActionResult Approve()
+		[Authorize]
+		[HttpPatch]
+		[Route("ApproveSplit")]
+		public IActionResult Approve(int SplitID)
 		{
-			return Ok();
-		}
-		
-		public IActionResult Reject()
-		{
-			return Ok();
-		}
-		
-		public IActionResult Pay()
-		{
-			return Ok();
+			if(_splitService.ToggleSplit(SplitID, "APPROVED_UNPAID"))
+			{
+				return Ok(new { success = true, message = "Split approved successfully." });
+			}
+			else
+			{
+				return BadRequest(new { success = false, message = "Failed to approve split." });
+			}
 		}
 
-		public IActionResult Close()
+		[Authorize]
+		[HttpPatch]
+		[Route("RejectSplit")]
+		public IActionResult Reject(int SplitID)
 		{
-			return Ok();
+			if (_splitService.ToggleSplit(SplitID, "REJECTED"))
+			{
+				return Ok(new { success = true, message = "Successfully rejected split request." });
+			}
+			else
+			{
+				return BadRequest(new { success = false, message = "Failed to reject split request." });
+			}
+		}
+
+		[Authorize]
+		[HttpPatch]
+		[Route("PayDue")]
+		public IActionResult Pay(int SplitID)
+		{
+			if(_splitService.PayDue(SplitID))
+			{
+				return Ok(new { success = true, message = "Marked as Done" });
+			}
+			else
+			{
+				return BadRequest(new { success = false, message = "Failed to mark done" });
+			}
+		}
+
+		[Authorize]
+		[HttpPatch]
+		[Route("CloseSplit")]
+		public IActionResult Close(int SplitID)
+		{
+			if(_splitService.MarkClosed(SplitID))
+			{
+				return Ok(new { success = true, message = "Split closed successfully." });
+			}
+			else
+			{
+				return BadRequest(new { success = false, message = "Failed to close split." });
+			}
 		}
 	}
 }

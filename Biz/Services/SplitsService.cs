@@ -101,7 +101,7 @@ namespace Biz.Services
 					Notification notification = new Notification()
 					{
 						NotifyFor = splitContact.SplitParticipantID,
-						ActionPerformedBy = userRepository.GetUserNameByID(splitContact.SplitParticipantID),
+						ActionPerformedBy = _userName,
 						NotificationText = NotificationText.AddedAsParticipant + _userName,
 						NotificationType = NotificationType.SPLIT_PARTICIPANT_ADDED
 					};

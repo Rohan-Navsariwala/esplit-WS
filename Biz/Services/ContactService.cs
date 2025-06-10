@@ -113,7 +113,7 @@ namespace Biz.Services
 		/// this method is to be utilized for either accepting or rejecting a connection request as of now
 		/// </summary>
 		/// <param name="contactID"></param>
-		/// <param name="contactStatus"></param>
+		/// <param name="contactStatus">This one is for, what contact status to put now</param>
 		/// <returns></returns>
 		public bool InteractContact(int contactID, ContactStatus contactStatus)
 		{

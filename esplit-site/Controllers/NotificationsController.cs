@@ -21,9 +21,19 @@ namespace esplit_site.Controllers
 		}
 
 		//what we can do is redirect to index in order to get the notifications refreshed, or i can just get the response code and perform removing from list action through JS, by that i will practice js also
-		public IActionResult Delete()
+
+		[Authorize]
+		[HttpDelete]
+		[Route("DeleteNotification")]
+		public IActionResult Delete(int NotificationID)
 		{
-			return Ok();
-		}
+			if (notifyService.DeleteNotification(NotificationID))
+			{
+				return Ok(new { success = true, message = "Notification deleted successfully." });
+			}
+			else
+			{
+				return BadRequest(new { success = false, message = "Failed to delete notification." });
+			}
 	}
 }
