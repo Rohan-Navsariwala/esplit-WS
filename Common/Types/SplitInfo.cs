@@ -15,5 +15,6 @@ namespace Common.Types
 		public decimal SplitAmount { get; set; }
 		public DateTime UpdatedOn { get; set; }
 		public bool IsClosed { get; set; }
+		public SplitStatus SplitParticipantStatus { get; set; }
 	}
 }

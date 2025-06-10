@@ -18,6 +18,7 @@ namespace Common.Types
 
 	public enum SplitStatus
 	{
+		Default = 0,
 		PENDING_APPROVAL = 1,
 		REJECTED = 2,
 		APPROVED_UNPAID = 3,

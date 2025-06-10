@@ -87,6 +87,7 @@ namespace DataAccess.Repositories
 					CreatedOn = Convert.ToDateTime(reader["CreatedOn"]),
 					UpdatedOn = reader["UpdatedOn"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["UpdatedOn"]),
 					IsClosed = Convert.ToBoolean(reader["IsClosed"]),
+					SplitParticipantStatus = (SplitStatus)reader["SplitStatus"]
 				};
 			});
 		}

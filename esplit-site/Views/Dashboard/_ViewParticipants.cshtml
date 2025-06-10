@@ -4,45 +4,44 @@
 @using Common.Types;
 @model List<ParticipantDto>
 
-<div class="modal fade" id="contactStatusModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="false">
+<div class="modal fade" id="contactStatusModal" tabindex="-1" >
 	<div class="modal-dialog modal-lg modal-dialog-scrollable">
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="modalLabel">Contact Status</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" ></button>
 			</div>
 
 			<div class="modal-body">
 				<p><strong>Split ID:</strong> @Model[0]?.SplitParticipant.SplitID </p>
-				<p><strong>Title:</strong> {{ splitTitle }}</p>
+				<!--<p><strong>Title:</strong> {{ splitTitle }}</p>-->
 
 				<table class="table table-bordered">
 					<thead class="table-light">
 						<tr>
 							<th>Participant</th>
-							<th>Has Approved</th>
-							<th>Has Paid</th>
+							<th>Status</th>
+							<th>Payment</th>
 							<th>Due Amount (₹)</th>
 						</tr>
 					</thead>
 					<tbody>
 						@foreach(ParticipantDto p in Model)
 						{
-							
-						<tr>
-							<td> @p.SplitParticipant.SplitParticipantID - @p.UserData.UserName </td>
-							<td>
-								<span class="@(p.SplitParticipant.SplitStatus == SplitStatus.APPROVED_UNPAID ? "text-success" : "text-danger")">
-									@(p.SplitParticipant.SplitStatus == SplitStatus.APPROVED_UNPAID  ? "Yes" : "No")
-								</span>
-							</td>
-							<td>
-									<span class="@(p.SplitParticipant.SplitStatus == SplitStatus.PAID ? "text-success" : "text-danger")">
-									@(p.SplitParticipant.SplitStatus == SplitStatus.PAID ? "Yes" : "No")
-								</span>
-							</td>
-							<td>@p.SplitParticipant.OweAmount</td>
-						</tr>
+							<tr>
+								<td> @p.UserData.UserName </td>
+								<td>
+										<span class="@(p.SplitParticipant.SplitStatus == SplitStatus.APPROVED_UNPAID || p.SplitParticipant.SplitStatus == SplitStatus.PAID ? "text-success" : "text-danger")">
+											@(p.SplitParticipant.SplitStatus == SplitStatus.APPROVED_UNPAID || p.SplitParticipant.SplitStatus == SplitStatus.PAID ? "APPROVED" : "PENDING")
+									</span>
+								</td>
+								<td>
+										<span class="@(p.SplitParticipant.SplitStatus == SplitStatus.PAID ? "text-success" : "text-danger")">
+										@(p.SplitParticipant.SplitStatus == SplitStatus.PAID ? "PAID" : "PENDING")
+									</span>
+								</td>
+								<td>@p.SplitParticipant.OweAmount</td>
+							</tr>
 						}
 					</tbody>
 				</table>

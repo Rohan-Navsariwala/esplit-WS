@@ -12,14 +12,14 @@ AS
 BEGIN
     IF @SplitStatus = '11' -- enum OWNED
     BEGIN
-        SELECT *
+        SELECT *,@SplitStatus as SplitStatus
         FROM dbo.Splits
         WHERE CreatedBy = @UserID
           AND IsClosed = 0;
     END
     ELSE
     BEGIN
-        SELECT s.*
+        SELECT s.*,c.SplitStatus
         FROM SplitContacts c
         INNER JOIN Splits s ON c.SplitID = s.SplitID
         WHERE c.SplitParticipantID = @UserID
