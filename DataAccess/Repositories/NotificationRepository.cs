@@ -59,7 +59,8 @@ namespace DataAccess.Repositories
 					NotifyFor = (int)reader["NotifyFor"],
 					ActionPerformedBy = reader["ActionPerformedBy"].ToString(),
 					NotificationText = reader["NotificationText"].ToString(),
-					NotificationType = (NotificationType)reader["NotificationType"]
+					NotificationType = (NotificationType)reader["NotificationType"],
+					CreatedOn = (DateTime)reader["CreatedOn"],
 					//IsDeleted = Convert.ToBoolean(reader["IsDeleted"]),
 				};
 			});

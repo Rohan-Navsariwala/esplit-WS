@@ -23,7 +23,7 @@
 			<button class="btn btn-sm btn-success" onclick="splitToggleActionPerformed(@Model.SplitID,@((int)Model.SplitParticipantStatus))">
 				@if(Model.SplitParticipantStatus == SplitStatus.PENDING_APPROVAL)
 				{
-					<span>Options</span>
+					<span>Approve</span>
 				}
 				else if (Model.SplitParticipantStatus == SplitStatus.APPROVED_UNPAID)
 				{
@@ -34,7 +34,7 @@
 					<span>Close</span>
 				}
 			</button>
-			<button class="btn btn-sm btn-info me-2" onclick="viewContactStatus(@Model.SplitID)">
+			<button class="btn btn-sm btn-info me-2" onclick="viewContactSplitStatus(@Model.SplitID)">
 				View Contact Status
 			</button>
 

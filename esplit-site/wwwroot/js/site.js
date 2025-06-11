@@ -8,8 +8,6 @@
 			let contactsModal = new bootstrap.Modal(document.getElementById('contactSplitStatusModal'));
 			contactsModal.show();
 
-			//$("#contactSplitStatusModal").Modal.show();
-
 		},
 		error: function (xhr, SplitStatus, error) {
 			console.log('Error:', error);

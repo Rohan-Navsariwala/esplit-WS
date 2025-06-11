@@ -14,6 +14,7 @@ namespace Common.Types
 		public string ActionPerformedBy { get; set; }
 		public string NotificationText { get; set; }
 		public NotificationType NotificationType { get; set; }
+		public DateTime CreatedOn { get; set; }
 		public bool IsDeleted { get; set; }
 	}
 

@@ -7,18 +7,22 @@
 
 <div class="container mt-5">
 	<div class="d-flex justify-content-between align-items-center mb-4">
+		<!-- Left-aligned Delete button -->
 		<div>
 			<button class="btn btn-danger me-2" onclick="toggleDeleteMode()">
-				{{ deleteMode ? 'Cancel Delete' : 'Delete' }}
+				Delete
 			</button>
-			
+		</div>
+
+		<!-- Right-aligned Send Request + Input -->
+		<div class="d-flex align-items-center">
+			<input type="text" class="form-control me-2" id="toUserName" name="toUserName" placeholder="Search Username" style="max-width: 200px;">
 			<button class="btn btn-success" onclick="SendContactRequest()">
-					Send Request
+				Send Request
 			</button>
-			<input type="text" class="form-control" id="toUserName" name="toUserName" placeholder="Search Username">
-			
 		</div>
 	</div>
+
 
 	<div class="list-group">
 		<!--here iterate through contacts template-->

@@ -115,5 +115,10 @@ namespace esplit_site.Controllers
 				return BadRequest(new { success = false, message = "Failed to close split." });
 			}
 		}
+
+		public IActionResult ModelTest()
+		{
+			return View("_AddSplitModal");
+		}
 	}
 }

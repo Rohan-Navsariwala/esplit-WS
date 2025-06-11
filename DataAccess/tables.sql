@@ -52,6 +52,7 @@ create table [dbo].[Notifications] (
 	ActionPerformedBy varchar(30) not null,
 	NotificationText varchar(100),
 	NotificationType int not null, --this is enum
+	CreatedOn DateTime default GETDATE() not null,
 	IsDeleted bit default 0,
 	CONSTRAINT PK_Notifications PRIMARY KEY (NotificationID),
 	CONSTRAINT FK_Notifications_Users FOREIGN KEY (NotifyFor) REFERENCES dbo.Users(UserID)

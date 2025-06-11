@@ -4,10 +4,16 @@
 @model Notification;
 
 <div class="list-group-item list-group-item-action flex-column align-items-start mb-2">
-	<div class="d-flex w-100 justify-content-between">
-		<h5 class="mb-1"> @Model.ActionPerformedBy </h5>
-		<small class="text-muted"> mmhhddmmyyyy </small>
-	</div>
-	<p class="mb-1"> @Model.NotificationText </p>
-	<button class="btn btn-sm btn-danger" onclick="deleteNotification(@Model.NotificationID)">Delete</button>
+    <div class="d-flex justify-content-between mb-1">
+        <button class="btn btn-sm btn-danger" onclick="deleteNotification(@Model.NotificationID)">Delete</button>
+        <small class="text-muted">@Model.CreatedOn</small>
+    </div>
+
+    <div class="mb-1">
+        @Model.ActionPerformedBy
+    </div>
+
+    <div>
+        @Model.NotificationText
+    </div>
 </div>
