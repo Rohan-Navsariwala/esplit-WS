@@ -53,10 +53,9 @@ namespace esplit_API.Controllers
 		[Route("CreateConnection")]
 		public IActionResult CreateContact([FromBody]string toUserName)
 		{
-			bool contact = contactService.CreateContact(toUserName);
-			if (contact != null)
+			int ContactID = contactService.CreateContact(toUserName);
+			if (ContactID > 0)
 			{
-				//return Ok(new { ContactID = contact });
 				return Ok("Contact created successfully");
 			}
 			else

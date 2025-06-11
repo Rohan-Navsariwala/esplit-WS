@@ -6,9 +6,27 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 create procedure GetThisContact
-	@ContactID int
+	@UserID int,
+	@ContactID int,
+	@ContactStatus int
 as
 begin 
-	select * from dbo.Contacts
-	where ContactID = @ContactID
+	create table #TempContactsTable
+	(
+		ContactID int,
+		ContactStatus int,
+		ContactInit nvarchar(50),
+		StatusUpdateOn datetime,
+		UserID1 int,
+		UserID2 int,
+		UserID int,
+		UserName nvarchar(50),
+		FullName nvarchar(100),
+		CreatedAt datetime,
+		isActive bit
+	);
+
+	Insert into #TempContactsTable exec GetContacts @UserID, @ContactStatus;
+	select * from #TempContactsTable where ContactID = @ContactID;
+	drop table #TempContactsTable;
 end

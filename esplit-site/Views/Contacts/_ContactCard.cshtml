@@ -2,16 +2,54 @@
 }
 
 @using Common.Types;
-@model ContactDto
+@model ContactDto;
 
-<div class="list-group-item d-flex justify-content-between align-items-center">
-	<div class="d-flex align-items-center">
-		<div *ngIf="deleteMode" class="form-check me-3">
-			<input type="checkbox" class="form-check-input">
-		</div>
+<div class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center" id="Contact-@Model.ContactData.ContactID">
+	<div class="d-flex align-items-center gap-3 flex-grow-1">
+		<!-- User Info -->
 		<div>
 			<h6 class="mb-0">@Model.UserData.FullName</h6>
 			<small class="text-muted">@Model.UserData.UserName</small>
 		</div>
+
+		<!-- Status Info -->
+		<div class="text-muted small">
+			@if (Model.ContactData.ContactStatus == ContactStatus.APPROVED)
+			{
+				@Model.ContactData.StatusUpdateOn
+			}
+			else if (Model.ContactData.ContactStatus == ContactStatus.PENDING)
+			{
+				@Model.ContactData.ContactInit
+			}
+		</div>
+	</div>
+
+	<!-- Action Buttons -->
+	<div class="mt-2 mt-md-0 d-flex gap-2">
+		@if (Model.ContactData.ContactStatus == ContactStatus.APPROVED)
+		{
+			<button class="btn btn-danger btn-sm" onclick="DeleteContact(@Model.ContactData.ContactID, 0)">
+				Delete
+			</button>
+		}
+		else if (Model.ContactData.ContactStatus == ContactStatus.PENDING)
+		{
+			@if (Model.ContactData.UserID1 == Model.UserData.UserID)
+			{
+				<button class="btn btn-success btn-sm" onclick="ApproveContactRequest(@Model.ContactData.ContactID)">
+					Approve
+				</button>
+				<button class="btn btn-danger btn-sm" onclick="RejectContactRequest(@Model.ContactData.ContactID)">
+					Reject
+				</button>
+			}
+			else
+			{
+				<button class="btn btn-danger btn-sm" onclick="DeleteContact(@Model.ContactData.ContactID, 1)">
+					Delete
+				</button>
+			}
+		}
 	</div>
 </div>

@@ -20,6 +20,29 @@ function AddNewSplit() {
 	SplitModal.show();
 }
 
+function AddUserToParticipantList() {
+	let selection = $("#ParticipantSelectionDropdown option:selected");
+
+	let template = `<div class="list-group-item d-flex justify-content-between align-items-center Participant-Entry" id="Participant${selection.val()}">
+                        <div>
+                            <span>${selection.text()}</span>
+                            <input type="number" class="form-control d-inline-block ms-2" style="width: 100px;" />
+                            [<input type="number" class="text-muted amount" id="AmountOf${selection.val()}" readonly />]
+                        </div>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="RemoveParticipant(${selection.val()})">&times;</button>
+                    </div>`;
+
+	let element = document.createElement("div");
+	element.innerHTML = template;
+	document.getElementById("ParticipantsList").appendChild(element);
+
+}
+
+function RemoveParticipant(ParticipantID) {
+	let ParticipantToRemove = `#Participant${ParticipantID}`;
+	$(ParticipantToRemove).remove();
+}
+
 function splitToggleActionPerformed(SplitID, SplitStatus) {
 	if (SplitStatus == 11) {
 		closeSplit(SplitID);
@@ -35,7 +58,7 @@ function closeSplit(SplitID) {
 	$.ajax({
 		url: "/Dashboard/CloseSplit?SplitID=" + SplitID,
 		type: "DELETE",
-		success: function (resopnse) {
+		success: function (response) {
 			
 		},
 		error: function (error) {
@@ -49,7 +72,7 @@ function approveSplit(SplitID) {
 	$.ajax({
 		url: "/Dashboard/ApproveSplit?SplitID=" + SplitID,
 		type: "PATCH",
-		success: function (resopnse) {
+		success: function (response) {
 
 		},
 		error: function (error) {
@@ -62,7 +85,7 @@ function rejectSplit(SplitID) {
 	$.ajax({
 		url: "/Dashboard/RejectSplit?SplitID=" + SplitID,
 		type: "DELETE",
-		success: function (resopnse) {
+		success: function (response) {
 
 		},
 		error: function (error) {
@@ -76,7 +99,7 @@ function paySplit(SplitID) {
 	$.ajax({
 		url: "/Dashboard/PayDues?SplitID=" + SplitID,
 		type: "",
-		success: function (resopnse) {
+		success: function (response) {
 
 		},
 		error: function (error) {
@@ -86,31 +109,39 @@ function paySplit(SplitID) {
 }
 
 function deleteNotification(NotificationID) {
-	console.log("delete notification " + NotificationID)
 	$.ajax({
 		url: "/Notifications?NotificationID=" + NotificationID,
 		type: "DELETE",
-		success: function (resopnse) {
-
+		success: function (response) {
+			if (response.success = true) {
+				let NID = `#Notification-${NotificationID}`;
+				$(NID).remove();
+			} else {
+				showErrorModal(response.message);
+			}
 		},
 		error: function (error) {
-
+			showErrorModal(error);
 		}
 	});
 }
 
 function SendContactRequest() {
-	let toUserName = $("#toUserName").Value
+	let toUserName = $("#toUserName").val();
 	console.log("contact req" + toUserName)
 	if (toUserName != "") {
 		$.ajax({
-			url: "/Contacts/AddContact?toUserName=" + toUserName,
+			url: "/Contacts/SendRequest?toUserName=" + toUserName,
 			type: "POST",
-			success: function (resopnse) {
-
+			success: function (response) {
+				if (response) {
+					$("#SentContactRequestContainer").append(response);
+				} else {
+					showErrorModal(response.message);
+				}
 			},
 			error: function (error) {
-
+				showErrorModal(error);
 			}
 		});
 	} else {
@@ -118,28 +149,67 @@ function SendContactRequest() {
 	}
 }
 
-function AddUserToParticipantList() {
-	let selection = $("#ParticipantSelectionDropdown option:selected");
+function ApproveContactRequest(ContactID) {
+	$.ajax({
+		url: "/Contacts/ApproveRequest?ContactID=" + ContactID,
+		type: "PATCH",
+		success: function (response) {
+			if (response) {
+				let CID = `#Contact-${ContactID}`;
+				$(CID).remove();
+				console.log(response);
+				$("#MyContactsContainer").append(response);
 
-	let template = `<div class="list-group-item d-flex justify-content-between align-items-center Participant-Entry" id="Participant${selection.val()}">
-                        <div>
-                            <span>${selection.text()}</span>
-                            <input type="number" class="form-control d-inline-block ms-2" style="width: 100px;" />
-                            [<span class="text-muted amount" id="AmountOf${selection.val()}">actual amount</span>]
-                        </div>
-                        <button type="button" class="btn btn-sm btn-danger" onclick="RemoveParticipant(${selection.val()})">&times;</button>
-                    </div>`;
-	
-	let element = document.createElement("div");
-	element.innerHTML = template;
-	document.getElementById("ParticipantsList").appendChild(element);	
-
+			} else {
+				showErrorModal(response.message);
+			}
+		},
+		error: function (error) {
+			showErrorModal(error);
+		}
+	});
+}
+function RejectContactRequest(ContactID) {
+	$.ajax({
+		url: "/Contacts/RejectRequest?ContactID=" + ContactID,
+		type: "PATCH",
+		success: function (response) {
+			if (response.success) {
+				let CID = `#Contact-${ContactID}`;
+				$(CID).remove();
+			} else {
+				showErrorModal(response.message);
+			}
+		},
+		error: function (error) {
+			showErrorModal(error);
+		}
+	});
+}
+function DeleteContact(ContactID, type) {
+	$.ajax({
+		url: "/Contacts/DeleteRequest?ContactID=" + ContactID + "&type=" + type,
+		type: "DELETE",
+		success: function (response) {
+			if (response.success) {
+				let CID = `#Contact-${ContactID}`;
+				$(CID).remove();
+			} else {
+				showErrorModal(response.message);
+			}
+		},
+		error: function (error) {
+			showErrorModal(error);
+		}
+	});
+}
+ 
+function showErrorModal(message) {
+	document.getElementById('errorModalBody').innerText = message;
+	const modal = new bootstrap.Modal(document.getElementById('errorModal'));
+	modal.show();
 }
 
-function RemoveParticipant(ParticipantID) {
-	let ParticipantToRemove = `#Participant${ParticipantID}`;
-	$(ParticipantToRemove).remove();
-}
 
 //#region events
 

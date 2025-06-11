@@ -98,13 +98,34 @@ namespace DataAccess.Repositories
 		/// </summary>
 		/// <param name="contactID"></param>
 		/// <returns></returns>
-		public Contact GetThisContact(int contactID)
+		public List<ContactDto> GetThisContact(int userID, int contactID, ContactStatus contactStatus)
 		{
-			Dictionary<string, object> parameters = new Dictionary<string, object> 
-			{ 
-				{ "ContactID", contactID }
+			Dictionary<string, object> parameters = new Dictionary<string, object>
+			{
+				{ "UserID", userID },
+				{ "ContactID", contactID },
+				{ "ContactStatus", (int)contactStatus }
 			};
-			return null;
+			return DataAccess.DBMethods.DbSelect<ContactDto>("GetThisContact", parameters, reader =>
+			{
+				return new ContactDto {
+					UserData = new User {
+						UserID = (int)reader["UserID"],
+						UserName = reader["UserName"].ToString(),
+						FullName = reader["FullName"].ToString(),
+						CreatedAt = Convert.ToDateTime(reader["CreatedAt"]),
+						IsActive = Convert.ToBoolean(reader["IsActive"]),
+					},
+					ContactData = new Contact {
+						ContactID = (int)reader["ContactID"],
+						ContactInit = Convert.ToDateTime(reader["ContactInit"]),
+						StatusUpdateOn = reader["StatusUpdateOn"] == DBNull.Value ? DateTime.MinValue : Convert.ToDateTime(reader["StatusUpdateOn"]),
+						ContactStatus = (ContactStatus)reader["ContactStatus"],
+						UserID1 = (int)reader["UserID1"],
+						UserID2 = (int)reader["UserID2"]
+					}
+				};
+			});
 		}
 	}
 }

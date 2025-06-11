@@ -48,8 +48,20 @@ namespace Biz.Services
 			return result;
 		}
 
+		public ContactDto GetThisContact(int ContactID, ContactStatus contactStatus)
+		{
+			ContactDto contact = contactRepo.GetThisContact(_userID, ContactID, contactStatus)[0];
+			if(contact != null)
+			{
+				return contact;
+			}
+			else
+			{
+				return null;
+			}
+		}
 
-		public bool CreateContact(string toUserName)
+		public int CreateContact(string toUserName)
 		{
 			int ContactID = contactRepo.CreateContact(_userID, toUserName);
 
@@ -69,12 +81,11 @@ namespace Biz.Services
 				notification.NotificationText = NotificationText.ConnectionRequested + _userName;
 				notifyService.CreateNotification(notification);
 
-				//return contactRepo.GetThisContact(ContactID);
-				return true;
+				return ContactID;
 			}
 			else
 			{
-				return false;
+				return 0;
 			}
 		}
 
@@ -83,9 +94,9 @@ namespace Biz.Services
 		/// </summary>
 		/// <param name="contactID"></param>
 		/// <returns></returns>
-		public bool DeleteContact(int contactID)
+		public bool DeleteContact(int contactID, int type)
 		{
-			if (IsOperationAllowed(contactID, "DELETE"))
+			if (IsOperationAllowed(contactID, "DELETE", type))
 			{
 				if (contactRepo.DeleteContact(contactID)){
 					Notification notification = new Notification()
@@ -154,10 +165,14 @@ namespace Biz.Services
 		/// <param name="ContactID"></param>
 		/// <param name="operation"></param>
 		/// <returns></returns>
-		public bool IsOperationAllowed(int ContactID, string operation = "")
+		public bool IsOperationAllowed(int ContactID, string operation = "", int type = 0)
 		{
 			ContactStatus contactStatus = (operation == "DELETE") ? ContactStatus.APPROVED : ContactStatus.PENDING;
 			ContactRequestDirection reqdir = (operation == "DELETE") ? ContactRequestDirection.NILL : ContactRequestDirection.RECEIVED;
+
+			//type 1 is for checking the sent connection request, so we need to check for pending status only
+			contactStatus = (type == 1) ? ContactStatus.PENDING : contactStatus; 
+			reqdir = (type == 1) ? ContactRequestDirection.SENT : reqdir;
 
 			//as of now this logic can't be utilized for checking for deleting the sent connection request
 			string cacheKey = $"Contacts_{reqdir}_{contactStatus}_{_userID}";
@@ -175,7 +190,7 @@ namespace Biz.Services
 				return false;
 			}
 
-			if(contacts.Find(c => c.ContactData.ContactID == ContactID) != default(ContactDto))
+			if(contacts?.Find(c => c.ContactData.ContactID == ContactID) != default(ContactDto))
 			{
 				return true;
 			}

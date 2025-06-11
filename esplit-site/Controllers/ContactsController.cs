@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace esplit_site.Controllers
 {
+	[Route("{controller}")]
 	public class ContactsController : Controller
 	{
 		public ContactService contactService;
@@ -17,9 +18,12 @@ namespace esplit_site.Controllers
 		[Authorize]
 		public IActionResult Index()
 		{
-			List<ContactDto> contacts = contactService.GetContacts(ContactStatus.APPROVED);
+			List<List<ContactDto>> allContacts = new List<List<ContactDto>>();
+			allContacts.Add(contactService.GetContacts(ContactStatus.APPROVED) ?? null);
+			allContacts.Add(contactService.GetContacts(ContactStatus.PENDING, ContactRequestDirection.RECEIVED) ?? null);
+			allContacts.Add(contactService.GetContacts(ContactStatus.PENDING, ContactRequestDirection.SENT) ?? null);
 
-			return View(contacts);
+			return View(allContacts);
 		}
 
 		[Authorize]
@@ -27,9 +31,11 @@ namespace esplit_site.Controllers
 		[Route("SendRequest")]
 		public IActionResult SendRequest(string toUserName)
 		{
-			if (contactService.CreateContact(toUserName))
+			int ContactID = contactService.CreateContact(toUserName);
+			if (ContactID > 0)
 			{
-				return Ok(new { success = true, message = "Contact request sent successfully." });
+				ContactDto contact = contactService.GetThisContact(ContactID, ContactStatus.PENDING);
+				return PartialView("_ContactCard", contact);
 			}
 			else
 			{
@@ -40,12 +46,12 @@ namespace esplit_site.Controllers
 		[Authorize]
 		[HttpPatch]
 		[Route("ApproveRequest")]
-		public IActionResult Approve(int ContactID)
+		public IActionResult ApproveRequest(int ContactID)
 		{
 			if(contactService.InteractContact(ContactID, ContactStatus.APPROVED))
 			{
-				return Ok(new { success = true, message = "Contact request approved successfully." });
-
+				ContactDto contact = contactService.GetThisContact(ContactID, ContactStatus.APPROVED);
+				return PartialView("_ContactCard", contact);
 			}
 			else
 			{
@@ -56,7 +62,7 @@ namespace esplit_site.Controllers
 		[Authorize]
 		[HttpPatch]
 		[Route("RejectRequest")]
-		public IActionResult Reject(int ContactID)
+		public IActionResult RejectRequest(int ContactID)
 		{
 			if (contactService.InteractContact(ContactID, ContactStatus.REJECTED))
 			{
@@ -72,9 +78,9 @@ namespace esplit_site.Controllers
 		[Authorize]
 		[HttpDelete]
 		[Route("DeleteRequest")]
-		public IActionResult Delete(int ContactID)
+		public IActionResult DeleteRequest(int ContactID, int type)
 		{
-			if (contactService.DeleteContact(ContactID))
+			if (contactService.DeleteContact(ContactID, type))
 			{
 				return Ok(new { success = true, message = "Contact deleted successfully." });
 			}
