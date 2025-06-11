@@ -6,27 +6,40 @@ using Common.Types;
 
 namespace esplit_site.Controllers
 {
+	[Route("{controller}")]
 	public class DashboardController : Controller
 	{
 		private SplitsService _splitService;
+		private ContactService _contactService;
 		public DashboardController(NotificationService notificationService, Identity _claims, CacheService _cache)
 		{
 			_splitService = new SplitsService(notificationService, _cache, _claims);
+			_contactService = new ContactService(_cache, notificationService, _claims);
 		}
 
 		[Authorize]
+		[HttpGet]
 		public IActionResult Index()
 		{
+			DashboardViewModel dashboardViewModel = new DashboardViewModel();
+
 			List<List<SplitInfo>> splits = new List<List<SplitInfo>>();
 			splits.Add(_splitService.GetSplits(SplitStatus.OWNED));
 			List<SplitInfo> allSplits = _splitService.GetSplits(SplitStatus.ALL);
 			splits.Add(allSplits.Where(s => s.SplitParticipantStatus == SplitStatus.PENDING_APPROVAL).ToList());
 			splits.Add(allSplits.Where(s => s.SplitParticipantStatus == SplitStatus.APPROVED_UNPAID).ToList());
+			dashboardViewModel.SplitsData = splits;
 
-			return View(splits);
+			List<ContactDto> contacts = new List<ContactDto>();
+			contacts = _contactService.GetContacts(ContactStatus.APPROVED);
+			dashboardViewModel.Contacts = contacts;
+
+			return View(dashboardViewModel);
 		}
 
 		//return all the splits for the given type
+		[HttpGet]
+		[Route("Splits")]
 		public IActionResult Splits()
 		{
 			return View();
@@ -35,6 +48,7 @@ namespace esplit_site.Controllers
 		//this is gonna return the dialogue box of participants of specific split
 		[Authorize]
 		[HttpGet]
+		[Route("SplitParticipants")]
 		public IActionResult SplitParticipants(int splitid)
 		{
 			List<ParticipantDto> participants = _splitService.GetParticipants(splitid);
@@ -116,6 +130,8 @@ namespace esplit_site.Controllers
 			}
 		}
 
+		[HttpGet]
+		[Route("ModelTest")]
 		public IActionResult ModelTest()
 		{
 			return View("_AddSplitModal");

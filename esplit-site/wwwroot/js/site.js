@@ -5,14 +5,19 @@
 		success: function (response) {
 			document.getElementById("SplitParticipantsContainer").innerHTML = response;
 
-			let contactsModal = new bootstrap.Modal(document.getElementById('contactSplitStatusModal'));
-			contactsModal.show();
+			let ParticipantsModal = new bootstrap.Modal(document.getElementById('SplitParticipantsModal'));
+			ParticipantsModal.show();
 
 		},
 		error: function (xhr, SplitStatus, error) {
 			console.log('Error:', error);
 		}
 	});
+}
+
+function AddNewSplit() {
+	let SplitModal = new bootstrap.Modal(document.getElementById("AddSplitModal"));
+	SplitModal.show();
 }
 
 function splitToggleActionPerformed(SplitID, SplitStatus) {
@@ -112,3 +117,34 @@ function SendContactRequest() {
 		console.log("bro fill the input field")
 	}
 }
+
+function AddUserToParticipantList() {
+	let selection = $("#ParticipantSelectionDropdown option:selected");
+
+	let template = `<div class="list-group-item d-flex justify-content-between align-items-center Participant-Entry" id="Participant${selection.val()}">
+                        <div>
+                            <span>${selection.text()}</span>
+                            <input type="number" class="form-control d-inline-block ms-2" style="width: 100px;" />
+                            [<span class="text-muted amount" id="AmountOf${selection.val()}">actual amount</span>]
+                        </div>
+                        <button type="button" class="btn btn-sm btn-danger" onclick="RemoveParticipant(${selection.val()})">&times;</button>
+                    </div>`;
+	
+	let element = document.createElement("div");
+	element.innerHTML = template;
+	document.getElementById("ParticipantsList").appendChild(element);	
+
+}
+
+function RemoveParticipant(ParticipantID) {
+	let ParticipantToRemove = `#Participant${ParticipantID}`;
+	$(ParticipantToRemove).remove();
+}
+
+//#region events
+
+$("#ParticipantSelectionDropdown").on("change", () => {
+	AddUserToParticipantList();
+})
+
+//endregion

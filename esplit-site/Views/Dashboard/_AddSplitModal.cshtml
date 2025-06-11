@@ -1,7 +1,10 @@
 ﻿@{
 }
 
-<div class="modal fade" id="AddSplitPopup" tabindex="-1">
+@using Common.Types;
+@model List<ContactDto>
+
+<div class="modal fade" id="AddSplitModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
@@ -23,32 +26,23 @@
                         </div>
                         <div class="col-auto">
                             <label class="form-label d-block">&nbsp;</label>
-                            <button type="button" class="btn btn-outline-secondary">%</button>
+                            <button type="button" id="AmountDistributionType" class="btn btn-outline-secondary" value="P">%</button>
                         </div>
                     </div>
 
                     <!-- Section 2, the list has to be dynamically loaded, and remove the element each time i add it into the list -->
                     <div class="mb-3">
-                        <label for="selectionDropdown" class="form-label">Select Item</label>
-                        <select class="form-select" id="selectionDropdown">
-                            <option value="">-- Select1 --</option>
-                            <option value="">-- Select2 --</option>
-                            <option value="">-- Select3 --</option>
-                        </select>
+                        <label for="ParticipantSelectionDropdown" class="form-label">Select Item</label>
+                        <select class="form-select" id="ParticipantSelectionDropdown">
+                        @foreach(ContactDto contact in Model)
+                        {
+                            <option value="@contact.UserData.UserID">@contact.UserData.FullName (<span class="text-muted">@contact.UserData.UserName</span>)</option>
+                        }
+                    </select>
                     </div>
 
-                    <div id="selectedList" class="list-group">
-                        <!-- this will be dynamically injected via JS later on, as well as need to keep track it using index or something -->
-                        
-                        <div class="list-group-item d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong>FullName</strong> (<span class="text-muted">username</span>)
-                                <input type="number" class="form-control d-inline-block ms-2" style="width: 100px;" />
-                                [<span class="text-muted">actual amount</span>]
-                            </div>
-                            <button type="button" class="btn btn-sm btn-danger">&times;</button>
-                        </div>
-                       
+                    <div id="ParticipantsList" class="list-group">
+                        <!-- this will be dynamically injected via JS later on, as well as need to keep track it using index or something -->                       
                     </div>
             </div>
 

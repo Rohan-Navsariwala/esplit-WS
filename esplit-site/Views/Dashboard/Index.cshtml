@@ -3,7 +3,7 @@
 }
 
 @using Common.Types;
-@model List<List<SplitInfo>>;
+@model DashboardViewModel;
 
 <div class="container mt-4">
 
@@ -15,14 +15,14 @@
 				<div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
 					<h5 class="mb-0">MySplits</h5>
 					<div>
-						<button class="btn btn-light btn-sm">Add New Split</button>
+						<button class="btn btn-light btn-sm" onclick="AddNewSplit()">Add New Split</button>
 					</div>
 				</div>
 
 				<div class="card-body" id="OwnedSplits">
 					<!-- Section 2: List of created splits -->
 					<!--here we loop through partial view-->
-					@foreach(SplitInfo s in Model[0])
+					@foreach(SplitInfo s in Model.SplitsData[0])
 					{
 						@await Html.PartialAsync("_SplitCard", s);
 					}
@@ -40,7 +40,7 @@
 				</div>
 				<div class="card-body" id="RequestedSplits">
 					<!--here we loop through partial view-->
-					@foreach (SplitInfo s in Model[1])
+					@foreach (SplitInfo s in Model.SplitsData[1])
 					{
 						@await Html.PartialAsync("_SplitCard", s);
 					}
@@ -54,7 +54,7 @@
 				</div>
 				<div class="card-body" id="DueSplits">
 					<!--here we loop through partial view-->
-					@foreach (SplitInfo s in Model[2])
+					@foreach (SplitInfo s in Model.SplitsData[2])
 					{
 						@await Html.PartialAsync("_SplitCard", s);
 					}
@@ -67,3 +67,6 @@
 </div>
 
 <div id="SplitParticipantsContainer"></div>
+<div id="AddSplitContainer">
+	@await Html.PartialAsync("_AddSplitModal", Model.Contacts);
+</div>
