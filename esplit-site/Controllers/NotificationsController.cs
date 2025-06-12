@@ -13,6 +13,7 @@ namespace esplit_site.Controllers
 		public NotificationsController(Identity common)
 		{
 			notifyService = new NotificationService(common);
+			ViewData["username"] = common.GetClaims().username;
 		}
 		[Authorize]
 		public IActionResult Index()

@@ -63,6 +63,10 @@ namespace Biz.Services
 
 		public int CreateContact(string toUserName)
 		{
+			if(toUserName == _userName)
+			{
+				return 0;
+			}
 			int ContactID = contactRepo.CreateContact(_userID, toUserName);
 
 			if (ContactID > 0)

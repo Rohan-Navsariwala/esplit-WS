@@ -13,6 +13,7 @@ namespace esplit_site.Controllers
 		public ContactsController(CacheService cache, NotificationService notificationService, Identity common)
 		{
 			contactService = new ContactService(cache, notificationService, common);
+			ViewData["username"] = common.GetClaims().username;
 		}
 
 		[Authorize]

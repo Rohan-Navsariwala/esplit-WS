@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Biz.Services;
-using Common.Utils;
+﻿using Biz.Services;
 using Common.Types;
+using Common.Utils;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using static Azure.Core.HttpHeader;
 
 namespace esplit_site.Controllers
 {
@@ -15,6 +16,7 @@ namespace esplit_site.Controllers
 		{
 			_splitService = new SplitsService(notificationService, _cache, _claims);
 			_contactService = new ContactService(_cache, notificationService, _claims);
+			ViewData["username"] = _claims.GetClaims().username;
 		}
 
 		[Authorize]

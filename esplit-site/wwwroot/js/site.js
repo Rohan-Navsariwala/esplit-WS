@@ -134,18 +134,17 @@ function SendContactRequest() {
 			url: "/Contacts/SendRequest?toUserName=" + toUserName,
 			type: "POST",
 			success: function (response) {
-				if (response) {
 					$("#SentContactRequestContainer").append(response);
-				} else {
-					showErrorModal(response.message);
-				}
 			},
-			error: function (error) {
-				showErrorModal(error);
+			error: function (xhr) {
+				let err = JSON.parse(xhr.responseText);
+				if (err.success === false) {
+					showErrorModal(err.message);
+				}
 			}
 		});
 	} else {
-		console.log("bro fill the input field")
+		showErrorModal("bro fill the input field")
 	}
 }
 
@@ -159,13 +158,13 @@ function ApproveContactRequest(ContactID) {
 				$(CID).remove();
 				console.log(response);
 				$("#MyContactsContainer").append(response);
-
-			} else {
-				showErrorModal(response.message);
-			}
+			} 
 		},
-		error: function (error) {
-			showErrorModal(error);
+		error: function (xhr) {
+			let err = JSON.parse(xhr.responseText);
+			if (err.success === false) {
+				showErrorModal(err.message);
+			}
 		}
 	});
 }
@@ -174,15 +173,15 @@ function RejectContactRequest(ContactID) {
 		url: "/Contacts/RejectRequest?ContactID=" + ContactID,
 		type: "PATCH",
 		success: function (response) {
-			if (response.success) {
+			if (response.success == true) {
 				let CID = `#Contact-${ContactID}`;
 				$(CID).remove();
 			} else {
 				showErrorModal(response.message);
 			}
 		},
-		error: function (error) {
-			showErrorModal(error);
+		error: function (xhr) {
+			showErrorModal(xhr.responseText.message);
 		}
 	});
 }
@@ -190,16 +189,17 @@ function DeleteContact(ContactID, type) {
 	$.ajax({
 		url: "/Contacts/DeleteRequest?ContactID=" + ContactID + "&type=" + type,
 		type: "DELETE",
+
 		success: function (response) {
-			if (response.success) {
+			if (response.success == true) {
 				let CID = `#Contact-${ContactID}`;
 				$(CID).remove();
 			} else {
 				showErrorModal(response.message);
 			}
 		},
-		error: function (error) {
-			showErrorModal(error);
+		error: function (xhr) {
+			showErrorModal(xhr.responseText.message);
 		}
 	});
 }

@@ -1,7 +1,7 @@
 ﻿@{
-    // string routerpath = ViewBag.RequestPath;
-    // routerpath = routerpath.Split("/")[1];
+    // string username = ViewData["username"].ToString() ?? string.Empty;
 }
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -35,10 +35,9 @@
                         <a class="nav-link" asp-area="" asp-controller="Contacts" asp-action="Index">Contacts</a>
                     </li>
                 </ul>
-                @* @if (routerpath != "u") *@
-                {
-                    <a class="btn btn-outline-light" href="/u/Login">Sign Out</a>
-                }
+
+                @* <span class="">@username</span> *@
+                <a class="btn btn-outline-light" href="/u/Login">Sign Out</a>
             </div>
         </nav>
     </header>
