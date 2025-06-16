@@ -8,15 +8,14 @@ using static Azure.Core.HttpHeader;
 namespace esplit_site.Controllers
 {
 	[Route("{controller}")]
-	public class DashboardController : Controller
+	public class DashboardController : BaseController
 	{
 		private SplitsService _splitService;
 		private ContactService _contactService;
-		public DashboardController(NotificationService notificationService, Identity _claims, CacheService _cache)
+		public DashboardController(NotificationService notificationService, Identity _claims, CacheService _cache) : base(_claims)
 		{
 			_splitService = new SplitsService(notificationService, _cache, _claims);
 			_contactService = new ContactService(_cache, notificationService, _claims);
-			ViewData["username"] = _claims.GetClaims().username;
 		}
 
 		[Authorize]

@@ -1,5 +1,5 @@
 ﻿@{
-    // string username = ViewData["username"].ToString() ?? string.Empty;
+    var username = ViewBag.UserName.ToString() ?? string.Empty;
 }
 
 
@@ -36,7 +36,7 @@
                     </li>
                 </ul>
 
-                @* <span class="">@username</span> *@
+                <span class="btn btn-outline-light me-md-3">@username</span>
                 <a class="btn btn-outline-light" href="/u/Login">Sign Out</a>
             </div>
         </nav>

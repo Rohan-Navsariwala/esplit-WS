@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace esplit_site.Controllers
 {
 	[Route("{controller}")]
-	public class NotificationsController : Controller
+	public class NotificationsController : BaseController
 	{
 		private NotificationService notifyService;
-		public NotificationsController(Identity common)
+		public NotificationsController(Identity common) : base(common)
 		{
 			notifyService = new NotificationService(common);
 			ViewData["username"] = common.GetClaims().username;

@@ -60,7 +60,7 @@ namespace esplit_site
 
 			app.MapControllerRoute(
 				name: "default",
-				pattern: "{controller=u}/{action=Login}");
+				pattern: "{controller=u}/{action=Index}");
 
 			app.Run();
 		}

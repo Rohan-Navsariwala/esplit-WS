@@ -12,7 +12,6 @@ using System.Text;
 
 namespace esplit_site.Controllers
 {
-	[Route("{controller}")]
 	public class uController : Controller
 	{
 		private readonly ILogger<uController> _logger;
@@ -36,7 +35,6 @@ namespace esplit_site.Controllers
 		}
 
 		[HttpGet]
-		[Route("Login")]
 		public IActionResult Login()
 		{
 			ViewBag.RequestPath = HttpContext.Request.Path;
@@ -44,7 +42,6 @@ namespace esplit_site.Controllers
 		}
 
 		[HttpGet]
-		[Route("Signup")]
 		public IActionResult Signup()
 		{
 			ViewBag.RequestPath = HttpContext.Request.Path;
@@ -52,7 +49,6 @@ namespace esplit_site.Controllers
 		}
 
 		[HttpPost]
-		[Route("LoginPost")]
 		public IActionResult LoginPost(string UserName, string PasswordHash)
 		{
 			UserService userService = new UserService();
@@ -93,7 +89,6 @@ namespace esplit_site.Controllers
 		}
 
 		[HttpPost]
-		[Route("SignupPost")]
 		public IActionResult SignupPost(string UserName, string FullName, string PasswordHash)
 		{
 			bool registrationStatus = _userService.RegisterUser(new User() 

@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Authorization;
 namespace esplit_site.Controllers
 {
 	[Route("{controller}")]
-	public class ContactsController : Controller
+	public class ContactsController : BaseController
 	{
 		public ContactService contactService;
-		public ContactsController(CacheService cache, NotificationService notificationService, Identity common)
+		public ContactsController(CacheService cache, NotificationService notificationService, Identity common) : base(common)
 		{
 			contactService = new ContactService(cache, notificationService, common);
 			ViewData["username"] = common.GetClaims().username;
@@ -89,6 +89,16 @@ namespace esplit_site.Controllers
 			{
 				return BadRequest(new { success = false, message = "Failed to delete contact." });
 			}
+		}
+
+		[Authorize]
+		[HttpGet]
+		[Route("GetContacts")]
+		public List<ContactDto> GetContacts()
+		{
+			List<ContactDto> contacts = contactService.GetContacts(ContactStatus.APPROVED) ?? new List<ContactDto>();
+
+			return contacts;
 		}
 	}
 }
