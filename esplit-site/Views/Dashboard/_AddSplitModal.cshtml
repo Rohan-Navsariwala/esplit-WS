@@ -30,22 +30,22 @@
                         </div>
                     </div>
 
-                    <!-- Section 2, the list has to be dynamically loaded, and remove the element each time i add it into the list -->
-                    <div class="mb-3">
-                        <label for="ParticipantSelectionDropdown" class="form-label">Select Item</label>
-                        <select class="form-select" id="ParticipantSelectionDropdown">
-                        @foreach(ContactDto contact in Model)
-                        {
-                            <option value="@contact.UserData.UserID">@contact.UserData.FullName (<span class="text-muted">@contact.UserData.UserName</span>)</option>
-                        }
-                        </select>
-
-                        <ul id="ParticipantSelectionListed"></ul>
-                    </div>
 
                     <div id="ParticipantsList" class="list-group">
                         <!-- this will be dynamically injected via JS later on, as well as need to keep track it using index or something -->                       
                     </div>
+
+                    <!-- Section 2, the list has to be dynamically loaded, and remove the element each time i add it into the list -->
+                    <div class="mb-3">
+                        @* <label for="ParticipantSelectionDropdown" class="form-label">Select Item</label> *@
+					    <input type="text" class="form-control" id="ContactSelectionSearch" placeholder="Search for a contact..." autocomplete="off" />
+                        
+                        <ul class="" id="ContactSelectionDropdown"></ul>
+                        
+
+                    </div>
+
+                    
             </div>
 
             <div class="modal-footer">
