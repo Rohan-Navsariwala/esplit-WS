@@ -196,7 +196,7 @@ const Contact = {
 		});
 	},
 
-	deleteContactRequest: function (ContactID, type) {
+	deleteContact: function (ContactID, type) {
 		$.ajax({
 			url: "/Contacts/DeleteRequest?ContactID=" + ContactID + "&type=" + type,
 			type: "DELETE",
@@ -472,3 +472,13 @@ function showErrorModal(message) {
 	const modal = new bootstrap.Modal(document.getElementById('errorModal'));
 	modal.show();
 }
+
+<li>
+	<input type="hidden" value="${contact.userid}"></input>
+	<button class="btn btn-primary" onclick="addToParticipantList(${contact.userid})">+</button>
+	<span class="contact-name">${contact.fullname}</span>
+	<span class="contact-name">${contact.username}</span>
+	<input type="number" data-calc-amount="" class="text-muted amount " readonly />
+	<input type="number" data-raw-amount="" class="form-control d-inline-block ms-2" id="AmountOfContactID"/>"
+
+</li>

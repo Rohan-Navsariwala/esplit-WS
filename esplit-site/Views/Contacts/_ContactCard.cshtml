@@ -29,7 +29,7 @@
 	<div class="mt-2 mt-md-0 d-flex gap-2">
 		@if (Model.ContactData.ContactStatus == ContactStatus.APPROVED)
 		{
-			<button class="btn btn-danger btn-sm" onclick="DeleteContact(@Model.ContactData.ContactID, 0)">
+			<button class="btn btn-danger btn-sm" onclick="Contact.deleteContact(@Model.ContactData.ContactID, 0)">
 				Delete
 			</button>
 		}
@@ -37,16 +37,16 @@
 		{
 			@if (Model.ContactData.UserID1 == Model.UserData.UserID)
 			{
-				<button class="btn btn-success btn-sm" onclick="ApproveContactRequest(@Model.ContactData.ContactID)">
+				<button class="btn btn-success btn-sm" onclick="Contact.approveContactRequest(@Model.ContactData.ContactID)">
 					Approve
 				</button>
-				<button class="btn btn-danger btn-sm" onclick="RejectContactRequest(@Model.ContactData.ContactID)">
+				<button class="btn btn-danger btn-sm" onclick="Contact.rejectContactRequest(@Model.ContactData.ContactID)">
 					Reject
 				</button>
 			}
 			else
 			{
-				<button class="btn btn-danger btn-sm" onclick="DeleteContact(@Model.ContactData.ContactID, 1)">
+				<button class="btn btn-danger btn-sm" onclick="Contact.deleteContact(@Model.ContactData.ContactID, 1)">
 					Delete
 				</button>
 			}

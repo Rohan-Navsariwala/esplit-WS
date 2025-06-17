@@ -17,10 +17,10 @@
 			
 			@if (Model.SplitParticipantStatus == SplitStatus.PENDING_APPROVAL)
 			{
-				<button class="btn btn-sm btn-danger" onclick="rejectSplit(@Model.SplitID)">Reject</button>
+				<button class="btn btn-sm btn-danger" onclick="Split.rejectSplit(@Model.SplitID)">Reject</button>
 			}
 
-			<button class="btn btn-sm btn-success" onclick="splitToggleActionPerformed(@Model.SplitID,@((int)Model.SplitParticipantStatus))">
+			<button class="btn btn-sm btn-success" onclick="Split.splitToggleActionPerformed(@Model.SplitID,@((int)Model.SplitParticipantStatus))">
 				@if(Model.SplitParticipantStatus == SplitStatus.PENDING_APPROVAL)
 				{
 					<span>Approve</span>
@@ -34,7 +34,7 @@
 					<span>Close</span>
 				}
 			</button>
-			<button class="btn btn-sm btn-info me-2" onclick="viewSplitStatus(@Model.SplitID)">
+			<button class="btn btn-sm btn-info me-2" onclick="Split.viewSplitStatus(@Model.SplitID)">
 				View Status
 			</button>
 
