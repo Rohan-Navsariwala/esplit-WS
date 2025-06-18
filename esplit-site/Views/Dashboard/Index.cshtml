@@ -15,7 +15,7 @@
 				<div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
 					<h5 class="mb-0">MySplits</h5>
 					<div>
-						<button class="btn btn-light btn-sm" onclick="Split.addSplit()">Add New Split</button>
+						<button class="btn btn-light btn-sm" onclick="Split.methods.addSplitPopup()">Add New Split</button>
 					</div>
 				</div>
 
@@ -68,5 +68,5 @@
 
 <div id="SplitParticipantsContainer"></div>
 <div id="AddSplitContainer">
-	@await Html.PartialAsync("_AddSplitModal", Model.Contacts);
+	@await Html.PartialAsync("_AddSplitModal");
 </div>

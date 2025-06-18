@@ -63,12 +63,10 @@ namespace Biz.Services
 				}
 				catch (Exception ex)
 				{
+					splits = new List<SplitInfo>();
 					Console.WriteLine(ex); //there has to be better way to handle this exception
 				}
-				finally
-				{
-					splits = new List<SplitInfo>();
-				}
+				
 				split.Info.SplitID = splitID;
 				splits.Add(split.Info);
 				_cache.InsertIntoCache(cacheKey, splits);

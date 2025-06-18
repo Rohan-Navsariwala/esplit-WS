@@ -38,7 +38,7 @@ namespace esplit_site.Controllers
 			return View(dashboardViewModel);
 		}
 
-		//return all the splits for the given type
+		//return all the splits for the given type. this method is not in use as of now
 		[HttpGet]
 		[Route("Splits")]
 		public IActionResult Splits()
@@ -54,6 +54,21 @@ namespace esplit_site.Controllers
 		{
 			List<ParticipantDto> participants = _splitService.GetParticipants(splitid);
 			return PartialView("_ViewParticipants", participants);
+		}
+
+		[Authorize]
+		[HttpPost]
+		[Route("AddSplit")]
+		public IActionResult AddSplit([FromBody]Split split)
+		{
+			if (_splitService.CreateSplit(split))
+			{
+				return Ok(new { success = true, message = "Split created successfully." });
+			}
+			else
+			{
+				return BadRequest(new { success = false, message = "Failed to create split." });
+			}
 		}
 
 		[Authorize]
@@ -129,13 +144,6 @@ namespace esplit_site.Controllers
 			{
 				return BadRequest(new { success = false, message = "Failed to close split." });
 			}
-		}
-
-		[HttpGet]
-		[Route("ModelTest")]
-		public IActionResult ModelTest()
-		{
-			return View("_AddSplitModal");
 		}
 	}
 }
