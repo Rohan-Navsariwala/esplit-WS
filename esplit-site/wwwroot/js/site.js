@@ -179,9 +179,10 @@
 				</div>
 			`;
 
-				listToPopulate.appendChild(listItem);
+			listToPopulate.appendChild(listItem);
 			});
 		},
+
 
 		prepareSplitData: function () {
 			let splitAmount = document.getElementById("SplitAmount").value;
@@ -246,13 +247,30 @@ $('.addPButton').on('click', function () {
 	document.getElementById("ContactSelectionDropdown").innerHTML = "";
 });
 
-// handle the submittion of the split
-$('#SplitSubmitButton').on('click', function () {
-	Split.methods..addSplit();
-});
+// handling split logic here for split type change
+$('AmountDistributionType').on("click", function () {
+	switch (this.val()) {
+		case 'P':
+			this.val('E');
+			Split.
 
+			break;
+		case 'E':
+
+
+			break;
+		case 'A':
+
+			break;
+	}
+});
+	// handle the submittion of the split
+	$('#SplitSubmitButton').on('click', function () {
+		Split.methods..addSplit();
+	});
 
 const Contact = {
+
 	populateAllContacts: function () {
 		Split.properties.allContacts = getContacts();
 	},
