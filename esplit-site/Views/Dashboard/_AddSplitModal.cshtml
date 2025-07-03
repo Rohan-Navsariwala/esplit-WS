@@ -9,7 +9,7 @@
 
             <div class="modal-header">
                 <h5 class="modal-title" id="customModalLabel">Enter Details</h5>
-                @* <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> *@
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
             <div class="modal-body">
@@ -24,24 +24,29 @@
                             <input type="number" class="form-control" id="SplitAmount" name="amount" />
                         </div>
                         <div class="col-auto">
-                            <label class="form-label d-block">&nbsp;</label>
-                            <button type="button" id="AmountDistributionType" class="btn btn-outline-secondary" value="P">%</button>
+                            <div class="btn-group" role="group" aria-label="Splitting Type">
+                                <input type="radio" class="btn-check" name="splittingType" id="splitByEqual" value="E" autocomplete="off" checked>
+                                <label class="btn btn-outline-secondary" for="splitEqual">•|•</label>
+
+                                <input type="radio" class="btn-check" name="splittingType" id="splitByAmount" value="A" autocomplete="off">
+                                <label class="btn btn-outline-secondary" for="splitAmount">$</label>
+
+                                <input type="radio" class="btn-check" name="splittingType" id="splitByPercent" value="P" autocomplete="off">
+                                <label class="btn btn-outline-secondary" for="splitPercent">%</label>
+                            </div>
+
                         </div>
                     </div>
 
 
-                    <div id="ParticipantsList" class="list-group">
+                    <ul id="ParticipantsList" class="list-group">
                         <!-- this will be dynamically injected via JS later on, as well as need to keep track it using index or something -->                       
-                    </div>
+                    </ul>
 
                     <!-- Section 2, the list has to be dynamically loaded, and remove the element each time i add it into the list -->
                     <div class="mb-3">
-                        @* <label for="ParticipantSelectionDropdown" class="form-label">Select Item</label> *@
 					    <input type="text" class="form-control" id="ContactSelectionSearch" placeholder="Search for a contact..." autocomplete="off" />
-                        
-                        <ul class="" id="ContactSelectionDropdown"></ul>
-                        
-
+                        <ul id="ContactSelectionDropdown" class="list-group"></ul>
                     </div>
 
                     

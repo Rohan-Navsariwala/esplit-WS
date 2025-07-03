@@ -10,10 +10,12 @@ namespace esplit_site.Controllers
 	public class ContactsController : BaseController
 	{
 		public ContactService contactService;
-		public ContactsController(CacheService cache, NotificationService notificationService, Identity common) : base(common)
+		private ViewSerializer _serializer;
+		public ContactsController(CacheService cache, NotificationService notificationService, Identity common, ViewSerializer serializer) : base(common)
 		{
 			contactService = new ContactService(cache, notificationService, common);
 			ViewData["username"] = common.GetClaims().username;
+			_serializer = serializer;
 		}
 
 		[Authorize]
@@ -30,17 +32,30 @@ namespace esplit_site.Controllers
 		[Authorize]
 		[HttpPost]
 		[Route("SendRequest")]
-		public IActionResult SendRequest(string toUserName)
+		public async Task<IActionResult> SendRequest(string toUserName)
 		{
 			int ContactID = contactService.CreateContact(toUserName);
 			if (ContactID > 0)
 			{
 				ContactDto contact = contactService.GetThisContact(ContactID, ContactStatus.PENDING);
-				return PartialView("_ContactCard", contact);
+
+				string data = await _serializer.RenderViewToStringAsync(this.ControllerContext, "_ContactCard", contact);
+				//return PartialView("_ContactCard", contact);
+
+				return Ok(new Response {
+					status = "success",
+					message = "Contact request sent successfully.",
+					data = data
+				});
 			}
 			else
 			{
-				return BadRequest(new { success = false, message = "Failed to send contact request." });
+				return BadRequest(new Response {
+					status = "error",
+					message = "Failed to send contact request.",
+					data = null
+				});
+				//return BadRequest(new { success = false, message = "Failed to send contact request." });
 			}
 		}
 

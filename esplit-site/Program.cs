@@ -37,6 +37,7 @@ namespace esplit_site
 			builder.Services.AddScoped<CacheService>();
 			builder.Services.AddScoped<Identity>();
 			builder.Services.AddScoped<NotificationService>();
+			builder.Services.AddScoped<ViewSerializer>();
 
 			builder.Services.AddControllersWithViews();
 			DBMethods._connectionString = builder.Configuration.GetConnectionString(Environment.MachineName);

@@ -9,7 +9,9 @@
 		filteredContacts: [],
 
 		// this is the list where we will be getting all the values from, {id and amount to be precise}
-		participantList: []
+		participantList: [],
+
+		splitType: 'E', // P for per person, E for equal, A for amount based
 	},
 
 	methods: {
@@ -35,7 +37,7 @@
 			SplitModal.show();
 
 			//we have to initially populate the list
-			this.allContacts = await Contact.getContacts();
+			Split.properties.allContacts = await Contact.getContacts();
 			//further operations we carry out via event listeners
 		},
 
@@ -107,7 +109,7 @@
 
 		// This function is called when the user types in the search box, just to filter based on search input
 		updateAndBindFilteredContacts: function (searchTerm) {
-			this.filteredContacts = this.allContacts.filter(contact => {
+			Split.properties.filteredContacts = Split.properties.allContacts.filter(contact => {
 				return contact.userData.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
 					contact.userData.userName.toLowerCase().includes(searchTerm.toLowerCase());
 			});
@@ -120,19 +122,19 @@
 		bindFilteredContactsToDDL: function () {
 			let dropdown = document.getElementById("ContactSelectionDropdown");
 			dropdown.innerHTML = "";
-			this.filteredContacts.forEach(contact => {
+			Split.properties.filteredContacts.forEach(contact => {
 				let item = document.createElement("li");
 				item.dataset.id = `FContactID${contact.userData.userID}`;
 				item.innerHTML = `
 				<div class="d-flex align-items-center gap-2">
-					<button type="button" class="btn btn-sm btn-success addPButton" onclick="Split.addToParticipantList(${contact.userData.userID})">&plus;</button>
+					<button type="button" class="btn btn-sm btn-success addPButton" onclick="Split.methods.addToParticipantList(${contact.userData.userID})">&plus;</button>
 					<span>${contact.userData.fullName} <span class="text-muted">(${contact.userData.userName})</span></span>
 				</div>
 			`;
 
 				dropdown.appendChild(item);
 			});
-			if (this.filteredContacts.length === 0) {
+			if (Split.properties.filteredContacts.length === 0) {
 				let item = document.createElement("li");
 				item.value = "";
 				item.innerHTML = "No contacts found";
@@ -142,10 +144,18 @@
 
 		// This function is called when the user clicks on the add button in the dropdown
 		addToParticipantList: function (contactID) {
-			let contact = Split.properties.allContacts.find(c => c.userData.userID === contactID);
-			Split.properties.participantList.push(contact);
-			Split.methods.bindParticipantsList();
-			document.getElementById("ContactSelectionDropdown").innerHTML = "";
+						
+			// check if the contact is already in the participant list
+			if (!Split.properties.participantList.some(c => c.userData.userID === contactID)) {
+				let contact = Split.properties.allContacts.find(c => c.userData.userID === contactID);
+				contact.calcAmount = 0;
+				contact.inputValut = 0;
+				Split.properties.participantList.push(contact);
+				Split.methods.bindParticipantsList();
+				//document.getElementById("ContactSelectionDropdown").innerHTML = "";	
+			}
+			
+
 		},
 
 		// This function is called when the user clicks on the remove button in the participant list
@@ -164,6 +174,9 @@
 
 		// This function binds the participant list to the UI, this generally happens after adding or removing a participant
 		bindParticipantsList: function () {
+
+			// based on current mode, 
+			
 			let listToPopulate = document.getElementById("ParticipantsList");
 			listToPopulate.innerHTML = "";
 			Split.properties.participantList.forEach(contact => {
@@ -171,11 +184,11 @@
 				listItem.setAttribute("data-participant-id", contact.userData.userID);
 				listItem.innerHTML = `
 				<div class="d-flex align-items-center gap-2 flex-wrap">
+					<button class="btn btn-sm btn-danger" onclick="Split.methods.removeFromParticipantList(${contact.userData.userID})">&minus;</button>
 					<span class="fw-bold">${contact.userData.fullName}</span>
-					<span class="text-muted">(${contact.userData.userName})</span>
-					<input type="number" data-calc-id="Participant${contact.userData.userID}" class="form-control form-control-sm text-muted" style="width: 80px;" value="0" readonly/>
+					<span class="text-muted" data-calc-id="Participant${contact.userData.userID}"></span>
 					<input type="number" data-amount-id="Participant${contact.userData.userID}" class="form-control form-control-sm" style="width: 80px;" value="0"/>
-					<button class="btn btn-sm btn-danger" onclick="Split.removeFromParticipantList(${contact.userData.userID})">&minus;</button>
+					<span></span>
 				</div>
 			`;
 
@@ -228,6 +241,32 @@
 					Common.showErrorModal(xhr.responseText);
 				}
 			});
+		},
+
+		splitByPercentage: function () {
+
+		},
+
+		splitEqually: function () {
+			let totalAmount = parseFloat($("SplitAmount").val());
+			let participantCount = Split.properties.participantList.length;
+			let amountPerParticipant = (totalAmount / participantCount).toFixed(2);
+
+			Split.properties.participantList.forEach(contact => {
+				contact.calcAmount = amountPerParticipant;
+				let calcElement = document.querySelector(`[data-calc-id="Participant${contact.userData.userID}"]`);
+				if (calcElement) {
+					calcElement.textContent = `Owes: ${amountPerParticipant}`;
+				}
+				let amountInput = document.querySelector(`[data-amount-id="Participant${contact.userData.userID}"]`);
+				if (amountInput) {
+					amountInput.value = amountPerParticipant;
+				}
+			});
+		},
+
+		splitByAmount: function () {
+
 		}
 	}
 
@@ -236,7 +275,7 @@
 // Initialize the Split object and populate all contacts on page load
 $('#ContactSelectionSearch').on('input', function () {
 	let searchTerm = $(this).val();
-	if (searchTerm.length >= 3) {
+	if (searchTerm.length > 0) {
 		Split.methods.updateAndBindFilteredContacts(searchTerm);
 	} if (searchTerm.length === 0) {
 		document.getElementById("ContactSelectionDropdown").innerHTML = "";
@@ -248,26 +287,33 @@ $('.addPButton').on('click', function () {
 });
 
 // handling split logic here for split type change
-$('AmountDistributionType').on("click", function () {
+$("radio[name='splittingType']").on("click", function () {
 	switch (this.val()) {
 		case 'P':
-			this.val('E');
-			Split.
+			Split.properties.splitType = 'P';
+			Split.methods.splitByPercentage();
 
 			break;
 		case 'E':
-
+			Split.properties.splitType = 'E';
+			Split.methods.splitEqually();
 
 			break;
 		case 'A':
+			Split.properties.splitType = 'A';
+			Split.methods.splitByAmount();
 
 			break;
 	}
 });
+
+//you moron, put an event on the updating the amount input
+
+
 	// handle the submittion of the split
-	$('#SplitSubmitButton').on('click', function () {
-		Split.methods..addSplit();
-	});
+$('#SplitSubmitButton').on('click', function () {
+	Split.methods.addSplit();
+});
 
 const Contact = {
 
@@ -299,8 +345,9 @@ const Contact = {
 			$.ajax({
 				url: "/Contacts/SendRequest?toUserName=" + toUserName,
 				type: "POST",
+				dataType: "json",
 				success: function (response) {
-					$("#SentContactRequestContainer").append(response);
+					$("#SentContactRequestContainer").append(response.data);
 				},
 				error: function (xhr) {
 					let err = JSON.parse(xhr.responseText);
